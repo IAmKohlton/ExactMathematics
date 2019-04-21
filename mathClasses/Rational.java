@@ -1,5 +1,8 @@
 package mathClasses;
 
+/**
+ * Rational representation of numbers that includes infinity.
+ */
 public class Rational implements Comparable<Rational> {
     /**
      * numerator for the given rational number
