@@ -72,7 +72,7 @@ public class Rational implements Comparable<Rational> {
      * @param den bottom of fraction
      * @return new Rational
      */
-    public Rational R(int num, int den){return new Rational((long) num, (long) den);}
+    public static Rational R(int num, int den){return new Rational((long) num, (long) den);}
 
     /**
      * Creates a positive infinity rational number

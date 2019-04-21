@@ -1,6 +1,4 @@
 In RationalPolynomial:
 	add (RationalPolynomial other)	
 	multiply (RationalPolynomial other)	
-	scale (int scaler)	
-	scale (Rational scaler)	
 	subtract (RationalPolynomial other)

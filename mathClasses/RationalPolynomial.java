@@ -1,7 +1,7 @@
 package mathClasses;
 
 import dataStructures.DoublyLinkedList;
-import dataStructures.Pair;
+import static mathClasses.Rational.R;
 
 public class RationalPolynomial {
     /**
@@ -463,5 +463,27 @@ public class RationalPolynomial {
         RationalPolynomial test2_1 = test2.copy();
         if(!test2.equals(test2_1) || test2 == test2_1)
             System.out.println("copy doesn't properly copy a rational polynomial");
+
+        RationalPolynomial zero = new RationalPolynomial(new Rational(0));
+        if(!(zero.scale(100).equals(zero)))
+            System.out.println("0 * 100 != 0");
+
+        if(!(test1.scale(3).equals(createFromIntegers(3,6,9))))
+            System.out.println("(1+2x+3x^2) * 3 != 3+6x+9x^2");
+
+        if(!(nullPoly.scale(100000).equals(nullPoly)))
+            System.out.println("null * 0 != null");
+
+        RationalPolynomial test2_5 = test2.scale(4);
+        RationalPolynomial test2_5_expected = new RationalPolynomial(R(2, 1), R(8,3), R(3, 1), R(16, 5));
+        if(!(test2_5.equals(test2_5_expected)))
+            System.out.println("Didn't scale rational polynomial correctly");
+
+        RationalPolynomial test3 = new RationalPolynomial(R(-1,3), R(4, 1), R(-3,2));
+        RationalPolynomial test3_1 = test3.scale(R(-3,4));
+        RationalPolynomial test3_1_expected = new RationalPolynomial(R(3,12), R(-3, 1), R(9, 16));
+        if(!(test3_1.equals(test3_1_expected)))
+            System.out.println("Didn't scale rational by a rational correctly");
+
     }
 }
