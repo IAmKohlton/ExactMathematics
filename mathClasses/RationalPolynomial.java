@@ -1,7 +1,8 @@
 package mathClasses;
 
 import dataStructures.DoublyLinkedList;
-import static mathClasses.Rational.R;
+
+import static mathClasses.Rational.*;
 
 /**
  * Represents a polynomial with rational coefficients. Supports addition, scaling, and multiplication of polynomials
@@ -70,6 +71,10 @@ public class RationalPolynomial {
      * @return scaled polynomial
      */
     public RationalPolynomial scale(Rational scaler){
+        if(scaler.isInfinity()){
+            throw new ArithmeticException("Rational polynomials cannot have coefficients equal to infinity");
+        }
+
         RationalPolynomial scaledPoly = new RationalPolynomial();
         if(this.isNull()){
             return scaledPoly;
@@ -268,6 +273,28 @@ public class RationalPolynomial {
         Rational coeff; // represents the coefficient in any given term
         Rational term; // represents the x in any given term
 
+        if(this.isNull()){
+            throw new IllegalStateException("Cannot solve for a null polynomial");
+        }
+
+        if(xVal.isInfinity()){
+            // the last term will dominate as x->inf so we only care about it's sign
+            this.poly.goLast();
+
+            // raise infinity to the kth power and then look at it's sign
+            long infCoeff = xVal.getSign() ? -1 : 1;
+            infCoeff = pow(infCoeff, this.getDegree());
+            boolean infSign = infCoeff != 1;
+
+            // if one of the sign of the infinity, or the sign of the highest term coefficient is negative then it should be negative infinity
+            // if both or neither are negative then it should give positive infinity
+            if(infSign ^ this.currentRational().getSign()){
+                return makeNegativeInfinity();
+            }else{
+                return makePositiveInfinity();
+            }
+        }
+
         this.poly.goFirst();
         for (int i = 0; i <= this.getDegree(); i++) {
             coeff = this.currentRational();
@@ -276,6 +303,10 @@ public class RationalPolynomial {
         }
 
         return runningTotal;
+    }
+
+    public Rational solve(int xVal){
+        return solve(new Rational(xVal));
     }
 
     /**
@@ -464,6 +495,11 @@ public class RationalPolynomial {
         // this assumption can be made since if they were wrong then everything else would also go wrong
         // toString was also tested fairly thoroughly beforehand
 
+        boolean caught;
+        Rational inf = makePositiveInfinity();
+        Rational negInf = makeNegativeInfinity();
+
+        // now testing copy
         RationalPolynomial test1 = createFromIntegers(1,2,3);
         RationalPolynomial test1_1 = test1.copy();
         if(!test1.equals(test1_1) || test1 == test1_1)
@@ -479,6 +515,7 @@ public class RationalPolynomial {
         if(!test2.equals(test2_1) || test2 == test2_1)
             System.out.println("copy doesn't properly copy a rational polynomial");
 
+        // now testing scale
         RationalPolynomial zero = new RationalPolynomial(new Rational(0));
         if(!(zero.scale(100).equals(zero)))
             System.out.println("0 * 100 != 0");
@@ -499,6 +536,31 @@ public class RationalPolynomial {
         RationalPolynomial test3_1_expected = new RationalPolynomial(R(3,12), R(-3, 1), R(9, 8));
         if(!(test3_1.equals(test3_1_expected)))
             System.out.println("Didn't scale rational by a rational correctly");
+
+        caught = false;
+        RationalPolynomial test0 = new RationalPolynomial(R(0,1));
+        try{
+            test0.scale(inf);
+        }catch(ArithmeticException e){
+            caught = true;
+        }
+        if(!caught){
+            System.out.println("Didn't throw exception on 0 poly * inf");
+        }
+
+        // now testing solve
+        Rational test4 = test1.solve(0); // test one is 1+2x+3x^2
+        if(!(test4.equals(R(1,1))))
+            System.out.println("polynomial at x=0 isn't the value of the constant");
+
+        Rational test5 = test1.solve(1);
+        if(!(test5.equals(R(6,1))))
+            System.out.println("polynomials at x=1 isn't sum of coefficients");
+
+        Rational test6 = test1.solve(inf);
+        if(!test6.equals(inf))
+            System.out.println("polynomial at x=inf isn't inf when highest coefficient is positive");
+
 
 
     }

@@ -71,11 +71,11 @@ public class Rational implements Comparable<Rational> {
 
     /**
      * Convenience psuedoconstructor to make typing out literal rationals much shorter
-     * @param num top of the fraction
-     * @param den bottom of fraction
+     * @param n top of the fraction
+     * @param d bottom of fraction
      * @return new Rational
      */
-    public static Rational R(int num, int den){return new Rational((long) num, (long) den);}
+    public static Rational R(int n, int d){return new Rational((long) n, (long) d);}
 
     /**
      * Creates a positive infinity rational number
@@ -289,7 +289,7 @@ public class Rational implements Comparable<Rational> {
      * @param exp int, power
      * @return long which is the result of base^exp
      */
-    private long pow(long base, int exp){
+    protected static long pow(long base, int exp){
         long tempBase = 1;
         for (int i = 0; i < exp; i++) {
             tempBase = tempBase * base;
