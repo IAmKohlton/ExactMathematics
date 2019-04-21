@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 In RationalPolynomial:
 	add (RationalPolynomial other)	
 	copy()	
@@ -9,3 +10,4 @@ In RationalPolynomial:
 
 In Rational:
 	power(int k)
+>>>>>>> 57f77fa76f9afb6063329700956a7ee2a6892709
