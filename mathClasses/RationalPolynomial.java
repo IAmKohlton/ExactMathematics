@@ -67,6 +67,10 @@ public class RationalPolynomial {
      */
     public RationalPolynomial scale(Rational scaler){
         RationalPolynomial scaledPoly = new RationalPolynomial();
+        if(this.isNull()){
+            return scaledPoly;
+        }
+
         this.poly.goFirst();
         while(!this.poly.isAfter()){
             scaledPoly.poly.insert(currentRational().multiply(scaler));
@@ -276,6 +280,9 @@ public class RationalPolynomial {
      */
     public RationalPolynomial copy(){
         RationalPolynomial temp = new RationalPolynomial();
+        if(this.isNull()){
+            return temp;
+        }
         poly.goFirst();
         while(!poly.isAfter()){
             temp.poly.insert(poly.item().item());
@@ -290,6 +297,10 @@ public class RationalPolynomial {
      * @return whether the two polynomials are equal
      */
     public boolean equals(RationalPolynomial other){
+        if(this.isNull()){
+            return other.isNull();
+        }
+
         // if they're not the same length, they're not equal
         if(other.poly.getSize() != this.poly.getSize()){
             return false;
@@ -481,9 +492,10 @@ public class RationalPolynomial {
 
         RationalPolynomial test3 = new RationalPolynomial(R(-1,3), R(4, 1), R(-3,2));
         RationalPolynomial test3_1 = test3.scale(R(-3,4));
-        RationalPolynomial test3_1_expected = new RationalPolynomial(R(3,12), R(-3, 1), R(9, 16));
+        RationalPolynomial test3_1_expected = new RationalPolynomial(R(3,12), R(-3, 1), R(9, 8));
         if(!(test3_1.equals(test3_1_expected)))
             System.out.println("Didn't scale rational by a rational correctly");
+
 
     }
 }
