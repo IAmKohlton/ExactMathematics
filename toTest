@@ -1,0 +1,7 @@
+add (RationalPolynomial other)	
+copy()	
+equals (RationalPolynomial other)	
+multiply (RationalPolynomial other)	
+scale (int scaler)	
+scale (Rational scaler)	
+subtract (RationalPolynomial other)
