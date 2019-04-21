@@ -67,6 +67,14 @@ public class Rational implements Comparable<Rational> {
     }
 
     /**
+     * Convenience psuedoconstructor to make typing out literal rationals much shorter
+     * @param num top of the fraction
+     * @param den bottom of fraction
+     * @return new Rational
+     */
+    public Rational R(int num, int den){return new Rational((long) num, (long) den);}
+
+    /**
      * Creates a positive infinity rational number
      * @return positive infinity
      */
