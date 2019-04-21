@@ -267,7 +267,8 @@ public class Rational implements Comparable<Rational> {
         }else if (k > 0){
             return new Rational(pow(numer, k), pow(denom, k));
         }else{
-            return new Rational(pow(denom, k), pow(numer, k));
+            int j = k > -k ? k : -k;
+            return new Rational(pow(denom, j), pow(numer, j));
         }
     }
 
@@ -783,7 +784,7 @@ public class Rational implements Comparable<Rational> {
         if(!(negInf.compareTo(oneHalf) < 0))
             System.out.println("-inf !< 1/2");
 
-        System.out.println("Testing complete");
+        // now testing increment
 
         Rational threeHalfs = new Rational(3, 2);
         threeHalfs.increment(new Rational(3,4));
@@ -791,7 +792,36 @@ public class Rational implements Comparable<Rational> {
         if(!(threeHalfs.equals(nineQuarters)))
             System.out.println("(3/2 += 3/4) != 9/4");
 
+        Rational ze = new Rational(0);
+        ze.increment(nineQuarters);
+        if(!(ze.equals(nineQuarters)))
+            System.out.println("(0 += 9/4 != 9/4");
 
+        Rational infi = makePositiveInfinity();
+        infi.increment(new Rational(-1000000000,3));
+        if(!(infi.equals(makePositiveInfinity())))
+            System.out.println("inf += -bigNumber != inf");
+
+        // now testing power
+
+        Rational newOne = one.power(1000);
+        if(!(newOne.equals(one)))
+            System.out.println("1^k != 1");
+
+        Rational three = oneThird.power(-1);
+        if(!(three.equals(new Rational(3)))) {
+            System.out.println("1/3^-1 != 3");
+            System.out.println(oneThird);
+            System.out.println(three);
+        }
+
+        Rational threeFifths = new Rational(3,5);
+        Rational bigNumbers = threeFifths.power(4);
+        if(!(bigNumbers.equals(new Rational(81, 625))))
+            System.out.println("(3/5)^4 != 81/625");
+
+
+        System.out.println("Testing complete");
 
     }
 }
