@@ -1,0 +1,13 @@
+<<<<<<< HEAD
+In RationalPolynomial:
+	add (RationalPolynomial other)	
+	copy()	
+	equals (RationalPolynomial other)	
+	multiply (RationalPolynomial other)	
+	scale (int scaler)	
+	scale (Rational scaler)	
+	subtract (RationalPolynomial other)
+
+In Rational:
+	power(int k)
+>>>>>>> 57f77fa76f9afb6063329700956a7ee2a6892709
