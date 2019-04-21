@@ -135,7 +135,6 @@ public class RationalPolynomial {
             thisRat = currentRational();
             otherRat = other.poly.item().item();
             currSum = thisRat.add(otherRat);
-            System.out.println(currSum);
             sum.poly.insert(currSum);
 
             this.poly.goForth();
@@ -298,8 +297,13 @@ public class RationalPolynomial {
         this.poly.goFirst();
         for (int i = 0; i <= this.getDegree(); i++) {
             coeff = this.currentRational();
-            term = xVal.power(i);
-            runningTotal.increment(coeff.multiply(term));
+            if(i == 0){
+                runningTotal.increment(coeff);
+            }else{
+                term = xVal.power(i);
+                runningTotal.increment(coeff.multiply(term));
+            }
+            this.poly.goForth();
         }
 
         return runningTotal;
@@ -554,14 +558,35 @@ public class RationalPolynomial {
             System.out.println("polynomial at x=0 isn't the value of the constant");
 
         Rational test5 = test1.solve(1);
-        if(!(test5.equals(R(6,1))))
+        if(!(test5.equals(R(6,1)))) {
+            System.out.println(test5);
+            System.out.println(test1);
             System.out.println("polynomials at x=1 isn't sum of coefficients");
+        }
 
         Rational test6 = test1.solve(inf);
         if(!test6.equals(inf))
             System.out.println("polynomial at x=inf isn't inf when highest coefficient is positive");
 
+        Rational test6_1 = test2.solve(R(5,8));
+        if(!test6_1.equals(R(1079, 768)))
+            System.out.println("polynomial at x=5/8 isn't the calculated value");
 
+        // now testing add
+
+        RationalPolynomial test7 = new RationalPolynomial(R(1,2), R(2,3), R(3,4));
+        RationalPolynomial test8 = new RationalPolynomial(R(5,6), R(7,8));
+        RationalPolynomial test9 = new RationalPolynomial(R(8,6), R(37, 24), R(3,4)); // = test7 + test8
+        RationalPolynomial test10 = new RationalPolynomial(R(-2, 6), R(-5, 24), R(3,4)); // = test7 - test8
+
+        if(!(test7.add(test8).equals(test9)))
+            System.out.println("didn't add polynomials properly");
+
+        if(!(test10.add(test8).equals(test7)))
+            System.out.println("didn't add polynomials properly");
+
+        if(!(test10.add(test9).equals(test7.scale(2))))
+            System.out.println("(x - y) + (x + y) != 2x");
 
     }
 }
