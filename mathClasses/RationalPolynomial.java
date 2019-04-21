@@ -445,31 +445,23 @@ public class RationalPolynomial {
     }
 
     public static void main(String[] args){
-        RationalPolynomial test = new RationalPolynomial(new Rational(-18,23), new Rational(22, 47), new Rational(-13, 13), new Rational(-35, 14));
-        RationalPolynomial test2 = new RationalPolynomial(new Rational(-13, -14), new Rational(26, -26), new Rational(6, 25));
-//        RationalPolynomial sum = test.add(test2);
-//        RationalPolynomial diff = test.subtract(test2);
-//        System.out.println(test);
-//        System.out.println(test2);
-//        System.out.println(sum);
-//        System.out.println(diff);
-//
-//        System.out.println(test.add(new RationalPolynomial(new Rational(0))));
-//        System.out.println(test.scale(-1));
-//        System.out.println((new RationalPolynomial(new Rational(0))).subtract(test));
+        // assumes the constructors, equals, and private methods work
+        // this assumption can be made since if they were wrong then everything else would also go wrong
+        // toString was also tested fairly thoroughly beforehand
+
+        RationalPolynomial test1 = createFromIntegers(1,2,3);
+        RationalPolynomial test1_1 = test1.copy();
+        if(!test1.equals(test1_1) || test1 == test1_1)
+            System.out.println("copy does not copy am integer polynomial properly");
 
         RationalPolynomial nullPoly = new RationalPolynomial();
+        RationalPolynomial nullPoly_1 = nullPoly.copy();
+        if(!nullPoly.equals(nullPoly_1) || nullPoly == nullPoly_1)
+            System.out.println("copy doesn't copy null polynomial properly");
 
-//        System.out.println(test.add(nullPoly));
-
-        RationalPolynomial timesTest1 = RationalPolynomial.createFromIntegers(1, 2);
-        System.out.println(timesTest1);
-        RationalPolynomial timesTest2 = RationalPolynomial.createFromIntegers(3, 4);
-        System.out.println(timesTest2);
-
-        System.out.println(timesTest1.multiply(timesTest2)); // should be 3 + 10x + 8x^2
-
-
-
+        RationalPolynomial test2 = new RationalPolynomial(new Rational(1,2), new Rational(2,3), new Rational(3,4), new Rational(4, 5));
+        RationalPolynomial test2_1 = test2.copy();
+        if(!test2.equals(test2_1) || test2 == test2_1)
+            System.out.println("copy doesn't properly copy a rational polynomial");
     }
 }
