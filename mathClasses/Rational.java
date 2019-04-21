@@ -194,12 +194,12 @@ public class Rational implements Comparable<Rational> {
      * @param other a rational number other than the current one
      * @return the product of the two rational numbers
      */
-    public Rational multiply(Rational other){
+    public Rational multiply(Rational other) {
         // test to see if we're multiplying 0 by infinity
-        if(this.equals(new Rational(0)) && other.isInfinity()){
+        if (this.equals(new Rational(0)) && other.isInfinity()) {
             throw new ArithmeticException("cannot multiply 0 by infinity");
         }
-        if(other.equals(new Rational(0)) && this.isInfinity()){
+        if (other.equals(new Rational(0)) && this.isInfinity()) {
             throw new ArithmeticException("cannot multiply 0 by infinity");
         }
 
@@ -217,7 +217,7 @@ public class Rational implements Comparable<Rational> {
         // if both numbers are finite
 
         // get new sign
-        boolean newSign = this.getSign()^other.getSign();
+        boolean newSign = this.getSign() ^ other.getSign();
 
         // multiply the numerator and denominators
         long newNum = this.getNumer() * other.getNumer();
@@ -225,14 +225,64 @@ public class Rational implements Comparable<Rational> {
 
         // reduce the numerator and denominator
         long newGcd = gcd(newNum, newDen);
-        newNum = newNum/newGcd;
-        newDen = newDen/newGcd;
-        if(newSign){
+        newNum = newNum / newGcd;
+        newDen = newDen / newGcd;
+        if (newSign) {
             return new Rational(-newNum, newDen);
-        }else{
+        } else {
             return new Rational(newNum, newDen);
         }
+    }
 
+    public Rational power(int k){
+        if(this.equals(new Rational(0)) && k == 0){
+            throw new ArithmeticException("Cannot raise 0 to the 0th power");
+        }
+        if(this.isInfinity()){
+            if(k == 0){ // inf ^ 0 = NaN
+                throw new ArithmeticException("Cannot raise infinity to the 0th power");
+            }else if(k < 0){ // (1/inf)^k = 0
+                return new Rational(0);
+            }else{
+                if(!this.getSign()){ // +inf^k = inf
+                    return makePositiveInfinity();
+                }else{
+                    if(k % 2 == 0){ // -inf^k = -inf if k is odd else -inf^k = inf
+                        return makePositiveInfinity();
+                    }else{
+                        return makeNegativeInfinity();
+                    }
+                }
+            }
+        }
+
+        // now for finite case
+        //( a ) k   a^k
+        //( - )^  =  -
+        //( b )     b^k
+        // if k is positive. If k is negative then flip the signs
+
+        if(k == 0){
+            return new Rational(0);
+        }else if (k > 0){
+            return new Rational(pow(numer, k), pow(denom, k));
+        }else{
+            return new Rational(pow(denom, k), pow(numer, k));
+        }
+    }
+
+    /**
+     * raise a given base to the exp power
+     * @param base long, usually a numerator or denominator
+     * @param exp int, power
+     * @return long which is the result of base^exp
+     */
+    private long pow(long base, int exp){
+        long tempBase = 1;
+        for (int i = 0; i < exp; i++) {
+            tempBase = tempBase * base;
+        }
+        return tempBase;
     }
 
     /**

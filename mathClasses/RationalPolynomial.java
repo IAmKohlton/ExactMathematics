@@ -16,6 +16,9 @@ public class RationalPolynomial {
     public RationalPolynomial(Rational ... args){
         poly = new DoublyLinkedList<>();
         for(Rational x: args){
+            if(x.isInfinity()){
+                throw new ArithmeticException("infinite values not allowed in polynomial");
+            }
             poly.insert(x);
         }
     }
@@ -245,6 +248,26 @@ public class RationalPolynomial {
                 currentRational = secondPoly.currentRational();
             }
         }
+    }
+
+    /**
+     * solve a polynmoial by plugging in a given x
+     * @param xVal x^i = xVal^i
+     * @return solution to polynomial
+     */
+    public Rational solve(Rational xVal){
+        Rational runningTotal = new Rational(0);
+        Rational coeff; // represents the coefficient in any given term
+        Rational term; // represents the x in any given term
+
+        this.poly.goFirst();
+        for (int i = 0; i <= this.getDegree(); i++) {
+            coeff = this.currentRational();
+            term = xVal.power(i);
+            runningTotal.increment(coeff.multiply(term));
+        }
+
+        return runningTotal;
     }
 
     /**
