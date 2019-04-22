@@ -142,7 +142,9 @@ public class RationalPolynomial {
         }
 
         // we now must undo the padded zero terms we did previously
-        unPadPoly(this, other);
+        this.unPadPoly();
+        other.unPadPoly();
+        sum.unPadPoly();
 
         return sum;
     }
@@ -235,29 +237,18 @@ public class RationalPolynomial {
         }
     }
 
-    private static void unPadPoly(RationalPolynomial firstPoly, RationalPolynomial secondPoly){
+    private void unPadPoly(){
         Rational currentRational;
         Rational zero = new Rational(0);
-        firstPoly.poly.goLast();
-        Rational lastRational = firstPoly.currentRational();
+        this.poly.goLast();
+        Rational lastRational = this.currentRational();
         if(lastRational.equals(zero)){
-            firstPoly.poly.goLast();
-            currentRational = firstPoly.currentRational();
-            while(currentRational.equals(zero)){
-                firstPoly.poly.delete();
-                firstPoly.poly.goLast();
-                currentRational = firstPoly.currentRational();
-            }
-        }
-        secondPoly.poly.goLast();
-        lastRational = secondPoly.currentRational();
-        if(lastRational.equals(zero)){
-            secondPoly.poly.goLast();
-            currentRational = secondPoly.currentRational();
-            while(currentRational.equals(zero)){
-                secondPoly.poly.delete();
-                secondPoly.poly.goLast();
-                currentRational = secondPoly.currentRational();
+            this.poly.goLast();
+            currentRational = this.currentRational();
+            while(currentRational.equals(zero) && this.getDegree() > 0){
+                this.poly.delete();
+                this.poly.goLast();
+                currentRational = this.currentRational();
             }
         }
     }
@@ -587,6 +578,25 @@ public class RationalPolynomial {
 
         if(!(test10.add(test9).equals(test7.scale(2))))
             System.out.println("(x - y) + (x + y) != 2x");
+
+        // now testing subtract
+
+        if(!(test7.subtract(test8).equals(test10)))
+            System.out.println("didn't subtract properly");
+
+        if(!(test8.subtract(test7).equals(test10.scale(-1))))
+            System.out.println("given x - y = z then y - x != -z");
+
+        if(!(test9.subtract(test7).equals(test8))) {
+            System.out.println(test9.subtract(test7));
+            System.out.println(test8);
+            System.out.println("didn't subtract correctly");
+        }
+
+        if(!(test9.subtract(test9).equals(new RationalPolynomial(R(0,1))))) {
+            System.out.println(new RationalPolynomial(R(0, 1)));
+            System.out.println(test9.subtract(test9));
+        }
 
     }
 }

@@ -1,3 +1,2 @@
 In RationalPolynomial:
 	multiply (RationalPolynomial other)	
-	subtract (RationalPolynomial other)
