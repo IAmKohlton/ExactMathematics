@@ -1,6 +1,7 @@
 package mathClasses;
 
 import dataStructures.DoublyLinkedList;
+import dataStructures.DoublyLinkedNode;
 import dataStructures.Pair;
 
 import static mathClasses.Rational.*;
@@ -16,6 +17,8 @@ public class RationalPolynomial {
      */
     protected DoublyLinkedList<Rational> poly;
 
+    protected final RationalPolynomial zeroPolynomial = new RationalPolynomial(new Rational(0));
+    
     /**
      * create a rational polynomial of arbitrary degree
      * @param args Rational numbers to go in the polynomial where further right elements have higher degree
@@ -61,9 +64,15 @@ public class RationalPolynomial {
 
     /**
      * obtains the degree of the current polynomial
+     * @precond 'this' must not have trailing zero terms
      * @return degree of polynomial
      */
     public int getDegree(){
+        DoublyLinkedNode<Rational> prevPosition = this.poly.getPosition();
+        this.poly.goLast();
+        if(this.currentRational().equals(new Rational(0,1)))
+            throw new IllegalStateException("degree is ambiguous when polynomial has trailing zeroes");
+        
         return this.poly.getSize() - 1;
     }
 
@@ -133,7 +142,7 @@ public class RationalPolynomial {
         }
 
         // special case for if one is the zero polynomial
-        RationalPolynomial zeroPoly = new RationalPolynomial(new Rational(0));
+        RationalPolynomial zeroPoly = zeroPolynomial;
         if(this.equals(zeroPoly)){
             return other;
         }
@@ -196,7 +205,7 @@ public class RationalPolynomial {
         }
 
         // special case for the zero polynomial
-        RationalPolynomial zero = new RationalPolynomial(new Rational(0));
+        RationalPolynomial zero = zeroPolynomial;
         if(this.equals(zero) || other.equals(zero)){
             return zero;
         }
@@ -244,8 +253,31 @@ public class RationalPolynomial {
         return product;
     }
 
+    /**
+     * divide one polynomial by the other
+     * @param other divisor polynomial
+     * @return Pair where the first item is the quotient, and the second is the divisor
+     */
     public Pair<RationalPolynomial, RationalPolynomial> divide(RationalPolynomial other){
-        return null;
+        if(this.isNull() || other.isNull())
+            throw new ArithmeticException("Cannot divide by empty polynomial");
+        
+        if(other.equals(zeroPolynomial))
+            throw new ArithmeticException("Cannot divide by zero");
+
+        Pair<RationalPolynomial, RationalPolynomial> quotientRemainder = new Pair<>();
+        
+        if(this.getDegree() < other.getDegree())
+            quotientRemainder.setFirst(this.copy());
+            quotientRemainder.setSecond(zeroPolynomial);
+        if(other.getDegree() == 0){
+            other.poly.goFirst();
+            quotientRemainder.setFirst(this.scale(other.currentRational()));
+            quotientRemainder.setSecond(zeroPolynomial);
+        }else{
+
+        }
+        return quotientRemainder;
     }
 
     private static void padPoly(RationalPolynomial firstPoly, RationalPolynomial secondPoly){
@@ -537,7 +569,7 @@ public class RationalPolynomial {
             System.out.println("copy doesn't properly copy a rational polynomial");
 
         // now testing scale
-        RationalPolynomial zero = new RationalPolynomial(new Rational(0));
+        RationalPolynomial zero = new RationalPolynomial(R(0,1));
         if(!(zero.scale(100).equals(zero)))
             System.out.println("0 * 100 != 0");
 
