@@ -25,6 +25,14 @@ public class DoublyLinkedList<I> {
         return cursor;
     }
 
+    public I getHead(){
+        return head.item();
+    }
+
+    public I getTail(){
+        return tail.item();
+    }
+
     public boolean isFirst(DoublyLinkedNode<I> item){
         return item == head;
     }
@@ -74,6 +82,7 @@ public class DoublyLinkedList<I> {
             head.setPrev(newNode);
             newNode.setNext(head);
             head = newNode;
+            size++;
         }
     }
 
