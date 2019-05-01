@@ -12,6 +12,8 @@ import static mathClasses.Rational.*;
 public class RationalPolynomial {
     // TODO check and handle overflow more elegantly basically everywhere
     // TODO have anything that iterates over poly use an iterator, not a cursor
+    // TODO do operations using multithreading
+
     /**
      * Rational polynomial where items further along in the list have higher degree
      */
@@ -72,7 +74,7 @@ public class RationalPolynomial {
         this.poly.goLast();
         if(this.currentRational().equals(new Rational(0,1)))
             throw new IllegalStateException("degree is ambiguous when polynomial has trailing zeroes");
-        
+
         return this.poly.getSize() - 1;
     }
 
@@ -142,7 +144,7 @@ public class RationalPolynomial {
         }
 
         // special case for if one is the zero polynomial
-        RationalPolynomial zeroPoly = zeroPolynomial;
+        RationalPolynomial zeroPoly = zeroPolynomial.copy();
         if(this.equals(zeroPoly)){
             return other;
         }
@@ -205,7 +207,7 @@ public class RationalPolynomial {
         }
 
         // special case for the zero polynomial
-        RationalPolynomial zero = zeroPolynomial;
+        RationalPolynomial zero = zeroPolynomial.copy();
         if(this.equals(zero) || other.equals(zero)){
             return zero;
         }
@@ -262,20 +264,38 @@ public class RationalPolynomial {
         if(this.isNull() || other.isNull())
             throw new ArithmeticException("Cannot divide by empty polynomial");
         
-        if(other.equals(zeroPolynomial))
+        if(other.equals(zeroPolynomial.copy()))
             throw new ArithmeticException("Cannot divide by zero");
 
         Pair<RationalPolynomial, RationalPolynomial> quotientRemainder = new Pair<>();
         
         if(this.getDegree() < other.getDegree())
             quotientRemainder.setFirst(this.copy());
-            quotientRemainder.setSecond(zeroPolynomial);
+            quotientRemainder.setSecond(zeroPolynomial.copy());
         if(other.getDegree() == 0){
             other.poly.goFirst();
             quotientRemainder.setFirst(this.scale(other.currentRational()));
-            quotientRemainder.setSecond(zeroPolynomial);
+            quotientRemainder.setSecond(zeroPolynomial.copy());
         }else{
+            RationalPolynomial thisCopy = this.copy();
+            int quotientDegree = this.getDegree() - other.getDegree();
 
+            Rational thisLeadingTerm;
+            Rational otherLeadingTerm = other.poly.getTail();
+            Rational scaler;
+
+            RationalPolynomial quotient = zeroPolynomial.copy();
+            RationalPolynomial scaledPoly;
+            for (int i = 0; i < quotientDegree; i++) {
+                thisLeadingTerm = thisCopy.poly.getTail();
+                scaler = thisLeadingTerm.divide(otherLeadingTerm);
+                scaledPoly = other.scale(scaler, quotientDegree - i);
+                thisCopy.subtract(scaledPoly);
+                thisCopy.unPadPoly(); // take away the last leading zero
+                quotient.poly.insertFirst(scaler);
+            }
+            quotientRemainder.setFirst(quotient);
+            quotientRemainder.setSecond(thisCopy);
         }
         return quotientRemainder;
     }
