@@ -66,6 +66,17 @@ public class DoublyLinkedList<I> {
         size++;
     }
 
+    public void insertFirst(I item){
+        if(size == 0){
+            insert(item);
+        }else{
+            DoublyLinkedNode<I> newNode = new DoublyLinkedNode<>(item);
+            head.setPrev(newNode);
+            newNode.setNext(head);
+            head = newNode;
+        }
+    }
+
     /**
      * delete the current item the cursor is on
      */
