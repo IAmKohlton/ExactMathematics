@@ -1,6 +1,7 @@
 package mathClasses;
 
 import dataStructures.DoublyLinkedList;
+import dataStructures.Pair;
 
 import static mathClasses.Rational.*;
 
@@ -9,6 +10,7 @@ import static mathClasses.Rational.*;
  */
 public class RationalPolynomial {
     // TODO check and handle overflow more elegantly basically everywhere
+    // TODO have anything that iterates over poly use an iterator, not a cursor
     /**
      * Rational polynomial where items further along in the list have higher degree
      */
@@ -71,6 +73,20 @@ public class RationalPolynomial {
      * @return scaled polynomial
      */
     public RationalPolynomial scale(Rational scaler){
+        return scale(scaler, 0);
+    }
+
+    /**
+     * scales polynomial by term of scaler * x^power
+     * @param scaler rational we scale polynomial by
+     * @param power exponent on the x term
+     * @return rescaled polynomial
+     */
+    private RationalPolynomial scale(Rational scaler, int power){
+        if(power < 0){
+            throw new ArithmeticException("Cannot scale polynomial by a negative power");
+        }
+
         if(scaler.isInfinity()){
             throw new ArithmeticException("Rational polynomials cannot have coefficients equal to infinity");
         }
@@ -78,6 +94,12 @@ public class RationalPolynomial {
         RationalPolynomial scaledPoly = new RationalPolynomial();
         if(this.isNull()){
             return scaledPoly;
+        }
+
+        // inserts a 'power' number of zero to front of polynomial
+        // same as multiplying by x^power
+        for (int i = 0; i < power; i++) {
+            scaledPoly.poly.insert(new Rational(0));
         }
 
         this.poly.goFirst();
@@ -220,6 +242,10 @@ public class RationalPolynomial {
         }
 
         return product;
+    }
+
+    public Pair<RationalPolynomial, RationalPolynomial> divide(RationalPolynomial other){
+        return null;
     }
 
     private static void padPoly(RationalPolynomial firstPoly, RationalPolynomial secondPoly){
@@ -597,6 +623,9 @@ public class RationalPolynomial {
             System.out.println(new RationalPolynomial(R(0, 1)));
             System.out.println(test9.subtract(test9));
         }
+
+
+        System.out.println("Testing complete");
 
     }
 }
