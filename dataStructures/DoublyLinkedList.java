@@ -123,14 +123,14 @@ public class DoublyLinkedList<I> {
         if(size == 0){
             throw new IllegalStateException("Cannot go to the first element of an empty list");
         }
-        cursor = head;
+        this.cursor = this.head;
     }
 
     public void goLast(){
         if(size == 0){
             throw new IllegalStateException("Cannot go to the last element of an empty list");
         }
-        cursor = tail;
+        this.cursor = this.tail;
     }
 
     public void goForth(){

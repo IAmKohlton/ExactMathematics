@@ -19,7 +19,6 @@ public class RationalPolynomial {
      */
     protected DoublyLinkedList<Rational> poly;
 
-    protected final RationalPolynomial zeroPolynomial = new RationalPolynomial(new Rational(0));
     
     /**
      * create a rational polynomial of arbitrary degree
@@ -144,7 +143,7 @@ public class RationalPolynomial {
         }
 
         // special case for if one is the zero polynomial
-        RationalPolynomial zeroPoly = zeroPolynomial.copy();
+        RationalPolynomial zeroPoly = new RationalPolynomial(new Rational(0)).copy();
         if(this.equals(zeroPoly)){
             return other;
         }
@@ -207,7 +206,7 @@ public class RationalPolynomial {
         }
 
         // special case for the zero polynomial
-        RationalPolynomial zero = zeroPolynomial.copy();
+        RationalPolynomial zero = new RationalPolynomial(new Rational(0)).copy();
         if(this.equals(zero) || other.equals(zero)){
             return zero;
         }
@@ -264,18 +263,18 @@ public class RationalPolynomial {
         if(this.isNull() || other.isNull())
             throw new ArithmeticException("Cannot divide by empty polynomial");
         
-        if(other.equals(zeroPolynomial.copy()))
+        if(other.equals(new RationalPolynomial(new Rational(0)).copy()))
             throw new ArithmeticException("Cannot divide by zero");
 
         Pair<RationalPolynomial, RationalPolynomial> quotientRemainder = new Pair<>();
         
         if(this.getDegree() < other.getDegree())
             quotientRemainder.setFirst(this.copy());
-            quotientRemainder.setSecond(zeroPolynomial.copy());
+            quotientRemainder.setSecond(new RationalPolynomial(new Rational(0)).copy());
         if(other.getDegree() == 0){
             other.poly.goFirst();
             quotientRemainder.setFirst(this.scale(other.currentRational()));
-            quotientRemainder.setSecond(zeroPolynomial.copy());
+            quotientRemainder.setSecond(new RationalPolynomial(new Rational(0)).copy());
         }else{
             RationalPolynomial thisCopy = this.copy();
             int quotientDegree = this.getDegree() - other.getDegree();
@@ -284,7 +283,7 @@ public class RationalPolynomial {
             Rational otherLeadingTerm = other.poly.getTail();
             Rational scaler;
 
-            RationalPolynomial quotient = zeroPolynomial.copy();
+            RationalPolynomial quotient = new RationalPolynomial(new Rational(0)).copy();
             RationalPolynomial scaledPoly;
             for (int i = 0; i < quotientDegree; i++) {
                 thisLeadingTerm = thisCopy.poly.getTail();
@@ -364,8 +363,13 @@ public class RationalPolynomial {
         }
 
         this.poly.goFirst();
+        this.poly.goToIth(0);
+
         for (int i = 0; i <= this.getDegree(); i++) {
             coeff = this.currentRational();
+            System.out.println(coeff);
+
+            System.out.println(runningTotal);
             if(i == 0){
                 runningTotal.increment(coeff);
             }else{
@@ -373,6 +377,8 @@ public class RationalPolynomial {
                 runningTotal.increment(coeff.multiply(term));
             }
             this.poly.goForth();
+            System.out.println(runningTotal);
+            System.out.println();
         }
 
         return runningTotal;
@@ -622,15 +628,18 @@ public class RationalPolynomial {
         }
 
         // now testing solve
-        Rational test4 = test1.solve(0); // test one is 1+2x+3x^2
-        if(!(test4.equals(R(1,1))))
+        RationalPolynomial test4_5 = new RationalPolynomial(R(3,1), R(2,1), R(1,1));
+        System.out.println(test4_5);
+        Rational test4 = test4_5.solve(0);
+        if(!(test4.equals(R(1,1)))) {
             System.out.println("polynomial at x=0 isn't the value of the constant");
+            System.out.println(test4);
+        }
 
         Rational test5 = test1.solve(1);
         if(!(test5.equals(R(6,1)))) {
-            System.out.println(test5);
-            System.out.println(test1);
             System.out.println("polynomials at x=1 isn't sum of coefficients");
+            System.out.println(test5);
         }
 
         Rational test6 = test1.solve(inf);
@@ -638,8 +647,9 @@ public class RationalPolynomial {
             System.out.println("polynomial at x=inf isn't inf when highest coefficient is positive");
 
         Rational test6_1 = test2.solve(R(5,8));
-        if(!test6_1.equals(R(1079, 768)))
+        if(!test6_1.equals(R(1079, 768))) {
             System.out.println("polynomial at x=5/8 isn't the calculated value");
+        }
 
         // now testing add
 
@@ -676,6 +686,21 @@ public class RationalPolynomial {
             System.out.println(test9.subtract(test9));
         }
 
+
+        // now testing multiply
+        RationalPolynomial test11 = new RationalPolynomial(R(2,1), R(3,1));
+        RationalPolynomial test12 = new RationalPolynomial(R(-5,1), R(2,1));
+        RationalPolynomial test13 = new RationalPolynomial(R(-10, 1), R(-11, 1), R(6,1));
+        RationalPolynomial constantThree = new RationalPolynomial(R(3,1));
+
+        if(!test11.multiply(constantThree).equals(test11.scale(3)))
+            System.out.println("multiply by constant not same as scaling by constant");
+
+        if(!test11.multiply(zero).equals(zero))
+            System.out.println("multiplying zero poly by other poly doesn't result in zero poly");
+
+        if(!test11.multiply(test12).equals(test13))
+            System.out.println("doesn't multiply polynomials correctly");
 
         System.out.println("Testing complete");
 
