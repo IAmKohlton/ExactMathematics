@@ -12,8 +12,6 @@ import static mathClasses.Rational.*;
 public class RationalPolynomial {
     // TODO check and handle overflow more elegantly basically everywhere
     // TODO have anything that iterates over poly use an iterator, not a cursor
-    // TODO do operations using multithreading
-
     /**
      * Rational polynomial where items further along in the list have higher degree
      */
@@ -73,7 +71,7 @@ public class RationalPolynomial {
         this.poly.goLast();
         if(this.currentRational().equals(new Rational(0,1)))
             throw new IllegalStateException("degree is ambiguous when polynomial has trailing zeroes");
-
+        
         return this.poly.getSize() - 1;
     }
 
@@ -144,6 +142,7 @@ public class RationalPolynomial {
 
         // special case for if one is the zero polynomial
         RationalPolynomial zeroPoly = new RationalPolynomial(new Rational(0)).copy();
+
         if(this.equals(zeroPoly)){
             return other;
         }
@@ -207,6 +206,7 @@ public class RationalPolynomial {
 
         // special case for the zero polynomial
         RationalPolynomial zero = new RationalPolynomial(new Rational(0)).copy();
+
         if(this.equals(zero) || other.equals(zero)){
             return zero;
         }
@@ -262,8 +262,9 @@ public class RationalPolynomial {
     public Pair<RationalPolynomial, RationalPolynomial> divide(RationalPolynomial other){
         if(this.isNull() || other.isNull())
             throw new ArithmeticException("Cannot divide by empty polynomial");
-        
+
         if(other.equals(new RationalPolynomial(new Rational(0)).copy()))
+
             throw new ArithmeticException("Cannot divide by zero");
 
         Pair<RationalPolynomial, RationalPolynomial> quotientRemainder = new Pair<>();
