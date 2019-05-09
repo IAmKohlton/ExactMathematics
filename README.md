@@ -8,7 +8,11 @@ One of the tenants of development I'm using for this is to develop everything fr
 
 # TODO
 Implement polynomial division (two different implementations)
+
 Replace cursor stuff with iterators
+
 Integerize a polynomial
+
 Manage overflow, and deal with it gracefully
+
 Use concurrency to speed up polynomial operations
