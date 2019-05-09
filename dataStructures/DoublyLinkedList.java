@@ -4,11 +4,11 @@ public class DoublyLinkedList<I> {
     protected DoublyLinkedNode<I> head;
 
     protected DoublyLinkedNode<I> tail;
-    
+
     protected DoublyLinkedNode<I> cursor;
 
     protected int size;
-    
+
     public DoublyLinkedList(){
         head = null;
         tail = null;
@@ -20,7 +20,7 @@ public class DoublyLinkedList<I> {
 
     public DoublyLinkedNode<I> item(){
         if(this.isAfter()){
-           throw new IllegalStateException("Can't get item while in the after position");
+            throw new IllegalStateException("Can't get item while in the after position");
         }
         return cursor;
     }
@@ -123,14 +123,14 @@ public class DoublyLinkedList<I> {
         if(size == 0){
             throw new IllegalStateException("Cannot go to the first element of an empty list");
         }
-        this.cursor = this.head;
+        cursor = head;
     }
 
     public void goLast(){
         if(size == 0){
             throw new IllegalStateException("Cannot go to the last element of an empty list");
         }
-        this.cursor = this.tail;
+        cursor = tail;
     }
 
     public void goForth(){
@@ -204,15 +204,17 @@ public class DoublyLinkedList<I> {
 //        System.out.println(test);
 //
 //        test.goBack();
-//        System.out.println(test.item()); // should be 3
-//        test.goBack();
-//        System.out.println(test.item()); // should be 2
-//        test.goLast();
 //        System.out.println(test.item()); // should be 4
+//        test.goBack();
+//        System.out.println(test.item()); // should be 3
+//        test.goLast();
+//        System.out.println(test.item()); // should be 5
 //        test.goToIth(1);
 //        System.out.println(test.item()); // should be 2
 //        test.goToIth(3);
 //        System.out.println(test.item()); // should be 4
+//        test.goFirst();
+//        System.out.println(test.item()); // should be 1
 //        try{
 //            test.goToIth(6);
 //        }catch(IllegalStateException e){

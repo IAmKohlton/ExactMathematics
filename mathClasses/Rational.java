@@ -469,7 +469,9 @@ public class Rational implements Comparable<Rational> {
 
         // reduce and return
         long newGcd = gcd(newNum, newDen);
-        this.numer =  newNum/newGcd;
+        this.sign = newNum <= 0; // false if greater than zero, true if less than zero
+        this.numer = newNum/newGcd;
+        this.numer = numer < 0 ? -numer : numer;
         this.denom = newDen/newGcd;
     }
 
