@@ -583,6 +583,8 @@ public class Rational implements Comparable<Rational> {
             // return true if they're both infinite, and of the same sign; else return false
             return other.isInfinity() && this.isInfinity() && this.getSign() == other.getSign();
         }
+        if(this.getNumer() == 0 && other.getNumer() == 0)
+            return true;
         // return true if both the numerators and denominators match
         return (this.getDenom() == other.getDenom()) && (this.getNumer() == other.getNumer()) && (this.getSign() == other.getSign());
     }

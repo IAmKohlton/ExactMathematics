@@ -109,6 +109,35 @@ public class RatPolyTest {
         if(!(test10.add(test9).equals(test7.scale(2))))
             System.out.println("(x - y) + (x + y) != 2x");
 
+        RationalPolynomial expectedResult;
+        RationalPolynomial term1;
+        RationalPolynomial term2;
+        RationalPolynomial result;
+        for (int i = -5; i < 5; i++) {
+            for (int j = -5; j < 5; j++) {
+                for (int k = -5; k < 5; k++) {
+                    for (int l = -5; l < 5; l++) {
+                        term1 = new RationalPolynomial(R(i,1), R(j,1));
+                        term2 = new RationalPolynomial(R(k,1), R(l,1));
+                        result = term1.add(term2);
+                        expectedResult = new RationalPolynomial(R(i+k, 1), R(j+l, 1));
+                        expectedResult.unPadPoly();
+                        if(!(result.equals(expectedResult))){
+                            System.out.println(term1);
+                            System.out.println("+" );
+                            System.out.println(term2);
+                            System.out.println("!=");
+                            System.out.println(expectedResult);
+                            System.out.println();
+
+                        }
+                    }
+                }
+            }
+        }
+
+
+
         // now testing subtract
 
         if(!(test7.subtract(test8).equals(test10)))
@@ -128,6 +157,29 @@ public class RatPolyTest {
             System.out.println(test9.subtract(test9));
         }
 
+        for (int i = -5; i < 5; i++) {
+            for (int j = -5; j < 5; j++) {
+                for (int k = -5; k < 5; k++) {
+                    for (int l = -5; l < 5; l++) {
+                        term1 = new RationalPolynomial(R(i,1), R(j,1));
+                        term2 = new RationalPolynomial(R(k,1), R(l,1));
+                        result = term1.subtract(term2);
+                        expectedResult = new RationalPolynomial(R(i-k, 1), R(j-l, 1));
+                        expectedResult.unPadPoly();
+                        if(!(result.equals(expectedResult))){
+                            System.out.println(term1);
+                            System.out.println("-" );
+                            System.out.println(term2);
+                            System.out.println("!=");
+                            System.out.println(expectedResult);
+                            System.out.println();
+
+                        }
+                    }
+                }
+            }
+        }
+
 
         // now testing multiply
         RationalPolynomial test11 = new RationalPolynomial(R(2,1), R(3,1));
@@ -145,6 +197,33 @@ public class RatPolyTest {
             System.out.println("doesn't multiply polynomials correctly");
             System.out.println(test11.multiply(test12));
             System.out.println(test13);
+        }
+
+        for (int i = -5; i < 5; i++) {
+            for (int j = -5; j < 5; j++) {
+                for (int k = -5; k < 5; k++) {
+                    for (int l = -5; l < 5; l++) {
+                        term1 = new RationalPolynomial(R(i,1), R(j,1));
+                        term1.unPadPoly();
+                        term2 = new RationalPolynomial(R(k,1), R(l,1));
+                        term2.unPadPoly();
+                        result = term1.multiply(term2);
+                        expectedResult = new RationalPolynomial(R(i*k, 1), R(i*l+j*k, 1), R(j*l,1));
+                        expectedResult.unPadPoly();
+                        if(!(result.equals(expectedResult))){
+                            System.out.println(term1);
+                            System.out.println("*" );
+                            System.out.println(term2);
+                            System.out.println("!=");
+                            System.out.println(expectedResult);
+                            System.out.println("instead");
+                            System.out.println(result);
+                            System.out.println();
+
+                        }
+                    }
+                }
+            }
         }
 
         if(!quietEnding)

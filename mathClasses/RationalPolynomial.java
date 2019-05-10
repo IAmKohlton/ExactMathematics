@@ -317,7 +317,7 @@ public class RationalPolynomial {
         }
     }
 
-    private void unPadPoly(){
+    public void unPadPoly(){
         Rational currentRational;
         Rational zero = new Rational(0);
         this.poly.goLast();
