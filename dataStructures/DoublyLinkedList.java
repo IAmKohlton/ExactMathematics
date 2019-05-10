@@ -194,47 +194,4 @@ public class DoublyLinkedList<I> {
         return outString;
     }
 
-    public static void main(String[] args){
-//        DoublyLinkedList<Integer> test = new DoublyLinkedList<>();
-//        test.insert(1);
-//        test.insert(2);
-//        test.insert(3);
-//        test.insert(4);
-//        test.insert(5);
-//        System.out.println(test);
-//
-//        test.goBack();
-//        System.out.println(test.item()); // should be 4
-//        test.goBack();
-//        System.out.println(test.item()); // should be 3
-//        test.goLast();
-//        System.out.println(test.item()); // should be 5
-//        test.goToIth(1);
-//        System.out.println(test.item()); // should be 2
-//        test.goToIth(3);
-//        System.out.println(test.item()); // should be 4
-//        test.goFirst();
-//        System.out.println(test.item()); // should be 1
-//        try{
-//            test.goToIth(6);
-//        }catch(IllegalStateException e){
-//            System.out.println("successfully threw exception");
-//        }
-//
-//        // now try delete stuff
-//        test.goToIth(2);
-//        test.delete();
-//        test.goToIth(0);
-//        test.delete();
-//        test.goLast();
-//        test.delete();
-//
-//        System.out.println(test);
-//        test.goLast();
-//        System.out.println(test.item().getPrev());
-
-
-
-
-    }
 }
