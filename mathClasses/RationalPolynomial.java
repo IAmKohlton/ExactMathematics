@@ -75,6 +75,10 @@ public class RationalPolynomial {
         if(this.currentRational().equals(new Rational(0,1)))
             throw new IllegalStateException("degree is ambiguous when polynomial has trailing zeroes");
 
+        RationalPolynomial zero = new RationalPolynomial(R(0,1));
+        if(this.equals(zero))
+            throw new ArithmeticException("zero polynomial doesn't have a degree");
+
         this.poly.savePosition(prevPosition);
         return this.poly.getSize() - 1;
     }
