@@ -40,7 +40,6 @@ public class RatTest {
         if(inf.equals(negInf))
             System.out.println("inf = negInf");
 
-
         // test add
         if(!twoThirds.add(oneThird).equals(one))
             System.out.println("two thirds plus one third isn't one");

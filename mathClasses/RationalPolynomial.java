@@ -30,6 +30,9 @@ public class RationalPolynomial {
             }
             poly.insert(x);
         }
+        if(this.poly.getSize() != 0){
+            this.unPadPoly();
+        }
     }
 
     /**

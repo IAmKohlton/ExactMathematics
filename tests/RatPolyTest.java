@@ -16,6 +16,12 @@ public class RatPolyTest {
         // this assumption can be made since if they were wrong then everything else would also go wrong
         // toString was also tested fairly thoroughly beforehand
 
+        // testing constructor for trailing zeroes
+        RationalPolynomial zeroPoly = new RationalPolynomial(R(0,1));
+        RationalPolynomial bigZeroPoly = new RationalPolynomial(R(0,1),R(0,1),R(0,1),R(0,1) );
+        if(!(zeroPoly.equals(bigZeroPoly)))
+            System.out.println("doesn't reduce trailing zeroes after polynomial");
+
         boolean caught;
         Rational inf = makePositiveInfinity();
         Rational negInf = makeNegativeInfinity();
