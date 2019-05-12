@@ -633,6 +633,47 @@ public class RationalPolynomial {
         return outString;
     }
 
+    public RationalPolynomial integerize(){
+        DoublyLinkedList<Long> denominators = new DoublyLinkedList<>();
+        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
+        iterator.goFirst();
+        while(!iterator.isAfter()){
+            denominators.insert(iterator.item().getDenom());
+        }
+        Rational totalLcm = new Rational(lcmOfAll(denominators),1);
+
+        iterator.goFirst();
+        RationalPolynomial intergerized = new RationalPolynomial();
+        Rational current;
+        while(!iterator.isAfter()){
+            current = iterator.item().multiply(totalLcm);
+            intergerized.poly.insert(current);
+        }
+        return intergerized;
+    }
+
+    private static long lcmOfAll(DoublyLinkedList<Long> denoms){
+        DoublyLinkedList<Long> lessDenoms = new DoublyLinkedList<>();
+        Long first;
+        Long second;
+        int beforeDeletionLength = denoms.getSize();
+
+        // loop this until we've done enough passes through denoms until we've reduced it to one
+        while(beforeDeletionLength > 1){
+            while(denoms.getSize() > 1){
+                denoms.goFirst();
+                first = denoms.item().item();
+                denoms.delete();
+                second = denoms.item().item();
+                denoms.delete();
+                lessDenoms.insert(lcm(first,second));
+            }
+            denoms = lessDenoms;
+            beforeDeletionLength = denoms.getSize();
+        }
+        return denoms.getHead().item();
+    }
+
     private static String getNChars(int n, String c){
         return new String(new char[n]).replace("\0", c);
     }

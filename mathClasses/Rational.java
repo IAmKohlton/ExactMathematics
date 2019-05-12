@@ -195,7 +195,7 @@ public class Rational implements Comparable<Rational> {
      * @param num2 the second integer
      * @return lcm of the two given integers
      */
-    private static long lcm(long num1, long num2){
+    public static long lcm(long num1, long num2){
         // uses the fact that l * m = gcd(l,m) * lcm(l,m) => lcm(l,m) = l * m / gcd(l,m)
         return num1 * num2 / gcd(num1, num2);
     }
