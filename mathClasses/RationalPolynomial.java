@@ -71,11 +71,15 @@ public class RationalPolynomial {
      */
     public int getDegree(){
         DoublyLinkedNode<Rational> prevPosition = this.poly.getPosition();
+
+        RationalPolynomial zero = new RationalPolynomial(R(0,1));
+        if(this.equals(zero))
+            throw new ArithmeticException("zero polynomial doesn't have a degree");
+
         this.poly.goLast();
         if(this.currentRational().equals(new Rational(0,1)))
             throw new IllegalStateException("degree is ambiguous when polynomial has trailing zeroes");
 
-        RationalPolynomial zero = new RationalPolynomial(R(0,1));
         if(this.equals(zero))
             throw new ArithmeticException("zero polynomial doesn't have a degree");
 
@@ -265,48 +269,75 @@ public class RationalPolynomial {
     /**
      * divide one polynomial by the other
      * @param other divisor polynomial
-     * @return Pair where the first item is the quotient, and the second is the divisor
+     * @return Pair where the first item is the quotient, and the second is the remainder
      */
-    public Pair<RationalPolynomial, RationalPolynomial> divide(RationalPolynomial other){
-//        if(this.isNull() || other.isNull())
-//            throw new ArithmeticException("Cannot divide by empty polynomial");
-//
-//        if(other.equals(new RationalPolynomial(new Rational(0)).copy()))
-//
-//            throw new ArithmeticException("Cannot divide by zero");
-//
-//        Pair<RationalPolynomial, RationalPolynomial> quotientRemainder = new Pair<>();
-//
-//        if(this.getDegree() < other.getDegree())
-//            quotientRemainder.setFirst(this.copy());
-//            quotientRemainder.setSecond(new RationalPolynomial(new Rational(0)).copy());
-//        if(other.getDegree() == 0){
-//            other.poly.goFirst();
-//            quotientRemainder.setFirst(this.scale(other.currentRational()));
-//            quotientRemainder.setSecond(new RationalPolynomial(new Rational(0)).copy());
-//        }else{
-//            RationalPolynomial thisCopy = this.copy();
-//            int quotientDegree = this.getDegree() - other.getDegree();
-//
-//            Rational thisLeadingTerm;
-//            Rational otherLeadingTerm = other.poly.getTail();
-//            Rational scaler;
-//
-//            RationalPolynomial quotient = new RationalPolynomial(new Rational(0)).copy();
-//            RationalPolynomial scaledPoly;
-//            for (int i = 0; i < quotientDegree; i++) {
-//                thisLeadingTerm = thisCopy.poly.getTail();
-//                scaler = thisLeadingTerm.divide(otherLeadingTerm);
-//                scaledPoly = other.scale(scaler, quotientDegree - i);
-//                thisCopy.subtract(scaledPoly);
-//                thisCopy.unPadPoly(); // take away the last leading zero
-//                quotient.poly.insertFirst(scaler);
-//            }
-//            quotientRemainder.setFirst(quotient);
-//            quotientRemainder.setSecond(thisCopy);
-//        }
-//        return quotientRemainder;
-        return null;
+    public Pair<RationalPolynomial, RationalPolynomial> quotientRemainder(RationalPolynomial other){
+        if(this.isNull() || other.isNull())
+            throw new ArithmeticException("Cannot divide by empty polynomial");
+
+        RationalPolynomial zero = new RationalPolynomial(new Rational(0));
+        if(other.equals(zero))
+            throw new ArithmeticException("Cannot divide by zero");
+
+        Pair<RationalPolynomial, RationalPolynomial> quotientRemainder = new Pair<>();
+
+        if(this.equals(zero)){
+            quotientRemainder.setFirst(zero);
+            quotientRemainder.setSecond(zero);
+        }else if(this.getDegree() < other.getDegree()) {
+            quotientRemainder.setFirst(zero);
+            quotientRemainder.setSecond(this.copy());
+        }else if(other.getDegree() == 0){
+            other.poly.goFirst();
+            quotientRemainder.setFirst(this.scale(other.currentRational().getInverse()));
+            quotientRemainder.setSecond(new RationalPolynomial(new Rational(0)).copy());
+        }else{
+            RationalPolynomial thisCopy = this.copy();
+            int quotientDegree = this.getDegree() - other.getDegree();
+
+            Rational thisLeadingTerm;
+            Rational otherLeadingTerm = other.poly.getTail();
+            Rational scaler;
+
+            RationalPolynomial quotient = new RationalPolynomial();
+            RationalPolynomial scaledPoly;
+            int oldThisLength = thisCopy.poly.getSize();
+            for (int i = 0; i <= quotientDegree; i++) {
+                try{
+                    thisCopy.poly.goToIth(oldThisLength - 1 - i);
+                    thisLeadingTerm = thisCopy.currentRational();
+                    scaler = thisLeadingTerm.divide(otherLeadingTerm);
+                }catch(IllegalStateException e){
+                    scaler = new Rational(0,1);
+                }
+
+                scaledPoly = other.scale(scaler, quotientDegree - i);
+                thisCopy = thisCopy.subtract(scaledPoly);
+                thisCopy.unPadPoly(); // take away the last leading zero
+                quotient.poly.insertFirst(scaler);
+            }
+            quotientRemainder.setFirst(quotient);
+            quotientRemainder.setSecond(thisCopy);
+        }
+        return quotientRemainder;
+    }
+
+    /**
+     * get only the quotient when dividing polynomials
+     * @param other divisor polynomial
+     * @return quotient when dividing by other
+     */
+    public RationalPolynomial divide(RationalPolynomial other){
+        return this.quotientRemainder(other).getFirst();
+    }
+
+    /**
+     * get only the remainder when dividing polynomials
+     * @param other divisor polynomial
+     * @return remainder when dividing by other
+     */
+    public RationalPolynomial remainder(RationalPolynomial other){
+        return this.quotientRemainder(other).getSecond();
     }
 
     private static void padPoly(RationalPolynomial firstPoly, RationalPolynomial secondPoly){

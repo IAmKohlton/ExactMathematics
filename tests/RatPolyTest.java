@@ -1,5 +1,6 @@
 package tests;
 
+import dataStructures.Pair;
 import mathClasses.Rational;
 import mathClasses.RationalPolynomial;
 
@@ -231,6 +232,90 @@ public class RatPolyTest {
                 }
             }
         }
+
+        // now testing divide
+        caught = false;
+        RationalPolynomial test14 = new RationalPolynomial(R(1,1), R(2,1), R(3,1));
+        try{
+            test14.divide(zero);
+        }catch(ArithmeticException e){
+            caught = true;
+        }
+        if(!caught)
+            System.out.println("Allowed to divide by zero");
+
+        RationalPolynomial constant = new RationalPolynomial(R(2,3));
+        RationalPolynomial scaledVersion = test14.scale(constant.currentRational().getInverse());
+        RationalPolynomial dividedVersion = test14.divide(constant);
+        if(!(scaledVersion.equals(dividedVersion))){
+            System.out.println("Result of scaling by inverse of constant is not the same as dividing by the constant");
+            System.out.println(scaledVersion);
+            System.out.println(dividedVersion);
+        }
+
+        RationalPolynomial test15 = new RationalPolynomial(R(-1,1), R(0,1), R(1,1)); // = -1 + x^2
+        RationalPolynomial test16 = new RationalPolynomial(R(1,1), R(1,1)); // = 1 + x
+        RationalPolynomial test17 = new RationalPolynomial(R(-1,1), R(1,1)); // = -1 + x
+        if(!(test15.divide(test16).equals(test17))){
+            System.out.println("(x^2-1) / (x+1) != x-1");
+            System.out.println(test15.divide(test16));
+        }
+
+        // it was deduced that the following identity exists. This is used for testing purposes
+        // (ax^2+bx+c) = (dx+e)(a/d x + b/d - ae/d^2) + c - eb/d + ae^2/d^2
+
+        RationalPolynomial expectedQuotient;
+        RationalPolynomial expectedRemainder;
+        RationalPolynomial resultQuotient;
+        RationalPolynomial resultRemainder;
+        Rational expectedQuotientConstant;
+        Rational expectedRemainderConstant;
+        Pair<RationalPolynomial, RationalPolynomial> resultQuotRem;
+        for (int a = -4; a < 4; a++) {
+            for (int b = -4; b < 4; b++) {
+                for (int c = -4; c < 4; c++) {
+                    for (int d = -4; d < 4; d++) {
+                        for (int e = -4; e < 4; e++) {
+                            try{
+                                expectedRemainderConstant = (R(c,1).subtract(R(e*b,d))).add(R(a*e*e,d*d));
+                            }catch(IllegalStateException ex){
+                                continue;
+                            }
+
+                            expectedRemainder = new RationalPolynomial(expectedRemainderConstant);
+                            expectedQuotientConstant = R(b,d).subtract(R(a*e,d*d));
+                            expectedQuotient = new RationalPolynomial(expectedQuotientConstant, R(a,d));
+                            term1 = new RationalPolynomial(R(c,1), R(b,1), R(a,1));
+                            term2 = new RationalPolynomial(R(e,1), R(d,1));
+                            term1.unPadPoly();
+                            term2.unPadPoly();
+                            resultQuotRem = term1.quotientRemainder(term2);
+                            resultQuotient = resultQuotRem.getFirst();
+                            resultRemainder = resultQuotRem.getSecond();
+                            if(!(resultQuotient.equals(expectedQuotient))){
+                                System.out.println("when dividing");
+                                System.out.println(term1);
+                                System.out.println(term2);
+                                System.out.println("expected quotient");
+                                System.out.println(expectedQuotient);
+                                System.out.println("but got");
+                                System.out.println(resultQuotient);
+                            }
+                            if(!(resultRemainder.equals(expectedRemainder))){
+                                System.out.println("when dividing");
+                                System.out.println(term1);
+                                System.out.println(term2);
+                                System.out.println("expected remainder");
+                                System.out.println(expectedRemainder);
+                                System.out.println("but got");
+                                System.out.println(resultRemainder);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
         if(!quietEnding)
             System.out.println("Rational polynomial tests complete");
