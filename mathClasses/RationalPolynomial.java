@@ -239,27 +239,30 @@ public class RationalPolynomial {
             productArray[i] = new Rational(0);
         }
 
-        this.poly.goFirst();
+        DoublyLinkedListIterator<Rational> thisIterator = this.poly.getIterator();
+        DoublyLinkedListIterator<Rational> otherIterator = other.poly.getIterator();
+
+        thisIterator.goFirst();
         int i = 0; // keep track of i, and j to find the degree of the intermediate product terms
         int j = 0;
         Rational thisCurrent;
         Rational otherCurrent;
         // loop through all elements of 'this'
-        while(!this.poly.isAfter()){
-            thisCurrent = this.currentRational();
-            other.poly.goFirst();
+        while(!thisIterator.isAfter()){
+            thisCurrent = thisIterator.item();
+            otherIterator.goFirst();
             j = 0;
-            while(!other.poly.isAfter()){
-                otherCurrent = other.currentRational();
+            while(!otherIterator.isAfter()){
+                otherCurrent = otherIterator.item();
 
                 // thisCurr * otherCurr is of degree i+j so we must increment the i+jth term by thisCurr * otherCurr
                 productArray[i+j].increment(thisCurrent.multiply(otherCurrent));
 
-                other.poly.goForth();
+                otherIterator.goForth();
                 j++;
             }
 
-            this.poly.goForth();
+            thisIterator.goForth();
             i++;
         }
 
@@ -294,7 +297,6 @@ public class RationalPolynomial {
             quotientRemainder.setFirst(zero);
             quotientRemainder.setSecond(this.copy());
         }else if(other.getDegree() == 0){ // if the denominator is a constant then just scale the numerator
-            other.poly.goFirst();
             quotientRemainder.setFirst(this.scale(other.currentRational().getInverse()));
             quotientRemainder.setSecond(zero);
         }else{
@@ -323,10 +325,12 @@ public class RationalPolynomial {
 
                 // scale the denominator by lastTermOther/lastTermThis
                 // after subtracting this is guaranteed to reduce the degree of thisCopy
+                // done repeatedly this will reduce thisCopy until it's of lesser degree than the denominator
                 scaledPoly = other.scale(scaler, quotientDegree - i);
                 thisCopy = thisCopy.subtract(scaledPoly);
+
                 thisCopy.unPadPoly(); // take away the last leading zero
-                // construct the quotient based on the scaler
+                // the quotient polynomial is constructed with the the scalers
                 quotient.poly.insertFirst(scaler);
             }
             quotientRemainder.setFirst(quotient);
@@ -355,7 +359,7 @@ public class RationalPolynomial {
 
     private static void padPoly(RationalPolynomial firstPoly, RationalPolynomial secondPoly){
         Rational zero = new Rational(0);
-        if(firstPoly.poly.getSize() < secondPoly.poly.getSize()){ // if this is of lesser degree
+        if(firstPoly.poly.getSize() < secondPoly.poly.getSize()){ // if this is of lesser degree then pad it
             firstPoly.poly.goLast();
             while(firstPoly.poly.getSize() < secondPoly.poly.getSize()){
                 firstPoly.poly.insert(zero);
@@ -400,32 +404,36 @@ public class RationalPolynomial {
 
         if(xVal.isInfinity()){
             // the last term will dominate as x->inf so we only care about it's sign
-            this.poly.goLast();
+            Rational lastTerm = this.poly.getTail().item();
 
             // raise infinity to the kth power and then look at it's sign
             long infCoeff = xVal.getSign() ? -1 : 1;
+
+            infCoeff = (this.getDegree() % 2 == 0) ? 1 : -1;
+
             infCoeff = pow(infCoeff, this.getDegree());
             boolean infSign = infCoeff != 1;
 
             // if one of the sign of the infinity, or the sign of the highest term coefficient is negative then it should be negative infinity
             // if both or neither are negative then it should give positive infinity
-            if(infSign ^ this.currentRational().getSign()){
+            if(infSign ^ lastTerm.getSign()){
                 return makeNegativeInfinity();
             }else{
                 return makePositiveInfinity();
             }
         }else{
-            poly.goFirst();
+            DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
+            iterator.goFirst();
 
             for (int i = 0; i <= this.getDegree(); i++) {
-                coeff = this.currentRational();
+                coeff = iterator.item();
                 if(i == 0){
                     runningTotal.increment(coeff);
                 }else{
                     term = xVal.power(i);
                     runningTotal.increment(coeff.multiply(term));
                 }
-                this.poly.goForth();
+                iterator.goForth();
             }
 
             return runningTotal;
@@ -446,10 +454,12 @@ public class RationalPolynomial {
         if(this.isNull()){
             return temp;
         }
-        poly.goFirst();
-        while(!poly.isAfter()){
-            temp.poly.insert(poly.item().item());
-            poly.goForth();
+
+        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
+       iterator.goFirst();
+        while(!iterator.isAfter()){
+            temp.poly.insert(iterator.item());
+            iterator.goForth();
         }
         return temp;
     }
@@ -468,16 +478,20 @@ public class RationalPolynomial {
         if(other.poly.getSize() != this.poly.getSize()){
             return false;
         }
-        other.poly.goFirst();
-        this.poly.goFirst();
-        while(!this.poly.isAfter()){
+
+        DoublyLinkedListIterator<Rational> thisIterator = this.poly.getIterator();
+        DoublyLinkedListIterator<Rational> otherIterator = other.poly.getIterator();
+
+        otherIterator.goFirst();
+        thisIterator.goFirst();
+        while(!thisIterator.isAfter()){
             // if every individual element isn't the same then they're not equal
-            if(!currentRational().equals(other.poly.item().item())){
+            if(!thisIterator.item().equals(otherIterator.item())){
                 return false;
             }
 
-            other.poly.goForth();
-            this.poly.goForth();
+            otherIterator.goForth();
+            thisIterator.goForth();
         }
         return true;
     }
@@ -494,7 +508,8 @@ public class RationalPolynomial {
         if(poly.getSize() == 0){
             return "0";
         }
-        poly.goFirst();
+        DoublyLinkedListIterator<Rational> iterator = poly.getIterator();
+        iterator.goFirst();
         Rational currentRat;
         int numDigits;
         int numLen;
@@ -502,12 +517,13 @@ public class RationalPolynomial {
         int expLen;
         String nextSign = "";
         for (int i = 0; i < poly.getSize(); i++) {
-            currentRat = poly.item().item();
+            currentRat = iterator.item();
             denLen = Long.toString(currentRat.getDenom()).length(); // string length of the current denominator
             numLen = Long.toString(currentRat.getNumer()).length(); // string length of the current numerator
             numDigits = numLen < denLen ? denLen : numLen;
             if(i != poly.getSize() - 1){
-                nextSign = poly.item().getNext().item().getSign() ? "-" : "+";
+                // get the sign of the next term of the polynomial
+                nextSign = iterator.getCurrentNode().getNext().item().getSign() ? "-" : "+";
             }
 
             expLen = Integer.toString(i).length();
@@ -525,6 +541,7 @@ public class RationalPolynomial {
             // bottomLine code is very similar to top line in all cases
             // now onto middleLine
             // middleLine += getNChars(numDigits, "\u2014") + " x^" + i + " " + currentSign + " ";
+            // \u2014 is unicode for an emdash which makes the divisor sign look nice
             // getNChars here makes it so the division symbol is as long as the longest digit
             // "x^+ " i gives "x" and the exponent
             //  " " + currentSign + " " gives the sign of the *next* rational number in the polynomial
@@ -571,8 +588,8 @@ public class RationalPolynomial {
             }
 
 
-            if(!poly.isLast(poly.item())){
-                poly.goForth();
+            if(!iterator.isLast()){
+                iterator.goForth();
             }
 
         }
@@ -585,7 +602,9 @@ public class RationalPolynomial {
      */
     public String oneLineToString(){
         String outString = "";
-        poly.goFirst();
+
+        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
+        iterator.goFirst();
 
         // poly.item().item().abs().toString(); pops up a lot here.
         // This is to get the string representation of the absolute value of the rational
@@ -593,20 +612,20 @@ public class RationalPolynomial {
 
         for (int i = 0; i < poly.getSize(); i++) {
             if(i == 0){
-                outString += poly.item().item().abs().toString(); //
+                outString += iterator.item().abs().toString(); //
             }else if(i == 1){
-                outString += poly.item().item().abs().toString() + "*x";
+                outString += iterator.item().abs().toString() + "*x";
             }else{
-                outString += poly.item().item().abs().toString() + "*x^"+i;
+                outString += iterator.item().abs().toString() + "*x^"+i;
             }
 
-            if(!poly.isLast(poly.item())){
-                if(poly.item().getNext().item().getSign()){
+            if(!iterator.isLast()){
+                if(iterator.getCurrentNode().getNext().item().getSign()){
                     outString += " - ";
                 }else{
                     outString += " + ";
                 }
-                poly.goForth();
+                iterator.goForth();
             }
         }
 

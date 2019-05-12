@@ -95,6 +95,14 @@ public class RatPolyTest {
         if(!test6.equals(inf))
             System.out.println("polynomial at x=inf isn't inf when highest coefficient is positive");
 
+        Rational test6_2 = test1.solve(negInf);
+        if(!test6_2.equals(inf))
+            System.out.println("polynomial at x = -inf isn't inf when poly is of degree 2");
+
+        Rational test6_3 = test2.solve(negInf);
+        if(!test6_3.equals(negInf))
+            System.out.println("polynomial at x = -inf isn't -inf when poly is of degree 3");
+
         Rational test6_1 = test2.solve(R(5,8));
         if(!test6_1.equals(R(1079, 768))) {
             System.out.println("polynomial at x=5/8 isn't the calculated value");
@@ -317,7 +325,6 @@ public class RatPolyTest {
                 }
             }
         }
-
 
         if(!quietEnding)
             System.out.println("Rational polynomial tests complete");

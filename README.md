@@ -7,10 +7,10 @@ One of the tenets of development I'm using for this is to develop everything fro
 
 
 # TODO
-Replace cursor stuff with iterators
-
 Integerize a polynomial
 
 Manage overflow, and deal with it gracefully
+
+arbitrary precision integers
 
 Use concurrency to speed up polynomial operations
