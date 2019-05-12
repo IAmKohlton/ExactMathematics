@@ -165,12 +165,13 @@ public class DoublyLinkedList<I> {
         }
     }
 
-    public DoublyLinkedNode<I> getPosition(){
-        return cursor;
+    public DoublyLinkedListIterator<I> getIterator(){
+        return getIterator(this.cursor);
     }
 
-    public void savePosition(DoublyLinkedNode<I> pos){
-        cursor = pos;
+
+    public DoublyLinkedListIterator<I> getIterator(DoublyLinkedNode<I> pos){
+        return new DoublyLinkedListIterator<I>(this, pos);
     }
 
     public String toString(){

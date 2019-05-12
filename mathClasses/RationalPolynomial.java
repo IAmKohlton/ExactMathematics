@@ -1,6 +1,7 @@
 package mathClasses;
 
 import dataStructures.DoublyLinkedList;
+import dataStructures.DoublyLinkedListIterator;
 import dataStructures.DoublyLinkedNode;
 import dataStructures.Pair;
 
@@ -70,20 +71,19 @@ public class RationalPolynomial {
      * @return degree of polynomial
      */
     public int getDegree(){
-        DoublyLinkedNode<Rational> prevPosition = this.poly.getPosition();
+        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
 
         RationalPolynomial zero = new RationalPolynomial(R(0,1));
         if(this.equals(zero))
             throw new ArithmeticException("zero polynomial doesn't have a degree");
 
-        this.poly.goLast();
-        if(this.currentRational().equals(new Rational(0,1)))
+        iterator.goLast();
+        if(iterator.item().equals(new Rational(0,1)))
             throw new IllegalStateException("degree is ambiguous when polynomial has trailing zeroes");
 
         if(this.equals(zero))
             throw new ArithmeticException("zero polynomial doesn't have a degree");
 
-        this.poly.savePosition(prevPosition);
         return this.poly.getSize() - 1;
     }
 
@@ -122,10 +122,12 @@ public class RationalPolynomial {
             scaledPoly.poly.insert(new Rational(0));
         }
 
-        this.poly.goFirst();
-        while(!this.poly.isAfter()){
-            scaledPoly.poly.insert(currentRational().multiply(scaler));
-            this.poly.goForth();
+        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
+
+        iterator.goFirst();
+        while(!iterator.isAfter()){
+            scaledPoly.poly.insert(iterator.item().multiply(scaler));
+            iterator.goForth();
         }
         return scaledPoly;
     }
@@ -172,16 +174,20 @@ public class RationalPolynomial {
         Rational otherRat;
         Rational thisRat;
         Rational currSum;
-        this.poly.goFirst();
-        other.poly.goFirst();
-        while(!this.poly.isAfter()){
-            thisRat = currentRational();
-            otherRat = other.poly.item().item();
+
+        DoublyLinkedListIterator<Rational> thisIterator = this.poly.getIterator();
+        DoublyLinkedListIterator<Rational> otherIterator = other.poly.getIterator();
+
+        thisIterator.goFirst();
+        otherIterator.goFirst();
+        while(!thisIterator.isAfter()){
+            thisRat = thisIterator.getCurrentNode().item();
+            otherRat = otherIterator.getCurrentNode().item();
             currSum = thisRat.add(otherRat);
             sum.poly.insert(currSum);
 
-            this.poly.goForth();
-            other.poly.goForth();
+            thisIterator.goForth();
+            otherIterator.goForth();
         }
 
         // we now must undo the padded zero terms we did previously
@@ -296,7 +302,7 @@ public class RationalPolynomial {
             int quotientDegree = this.getDegree() - other.getDegree();
 
             Rational thisLeadingTerm;
-            Rational otherLeadingTerm = other.poly.getTail();
+            Rational otherLeadingTerm = other.poly.getTail().item();
             Rational scaler;
 
             RationalPolynomial quotient = new RationalPolynomial();

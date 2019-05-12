@@ -1,9 +1,22 @@
 package dataStructures;
 
 public class DoublyLinkedListIterator<I> {
-    protected DoublyLinkedNode currentNode;
+    protected DoublyLinkedNode<I> currentNode;
 
     protected DoublyLinkedList<I> list;
+
+    public DoublyLinkedListIterator(DoublyLinkedList<I> list, DoublyLinkedNode<I> position){
+        this.list = list;
+        currentNode = position;
+    }
+
+    public DoublyLinkedNode<I> getCurrentNode(){
+        return currentNode;
+    }
+
+    public I item(){
+        return currentNode.item();
+    }
 
     public boolean isFirst(){
         return list.getHead() == currentNode;

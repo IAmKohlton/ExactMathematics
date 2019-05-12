@@ -179,6 +179,8 @@ public class RatPolyTest {
                             System.out.println(term2);
                             System.out.println("!=");
                             System.out.println(expectedResult);
+                            System.out.println("instead");
+                            System.out.println(result);
                             System.out.println();
 
                         }
