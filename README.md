@@ -7,8 +7,6 @@ One of the tenants of development I'm using for this is to develop everything fr
 
 
 # TODO
-Implement polynomial division (two different implementations)
-
 Replace cursor stuff with iterators
 
 Integerize a polynomial
