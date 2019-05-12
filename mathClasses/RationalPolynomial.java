@@ -281,16 +281,16 @@ public class RationalPolynomial {
 
         Pair<RationalPolynomial, RationalPolynomial> quotientRemainder = new Pair<>();
 
-        if(this.equals(zero)){
+        if(this.equals(zero)){ // if the numerator is zero then both the quotient and the remainder is zero
             quotientRemainder.setFirst(zero);
             quotientRemainder.setSecond(zero);
-        }else if(this.getDegree() < other.getDegree()) {
+        }else if(this.getDegree() < other.getDegree()) { // if the numerator is a higher degree than the denominator then remainder = numerator and quotient = zero
             quotientRemainder.setFirst(zero);
             quotientRemainder.setSecond(this.copy());
-        }else if(other.getDegree() == 0){
+        }else if(other.getDegree() == 0){ // if the denominator is a constant then just scale the numerator
             other.poly.goFirst();
             quotientRemainder.setFirst(this.scale(other.currentRational().getInverse()));
-            quotientRemainder.setSecond(new RationalPolynomial(new Rational(0)).copy());
+            quotientRemainder.setSecond(zero);
         }else{
             RationalPolynomial thisCopy = this.copy();
             int quotientDegree = this.getDegree() - other.getDegree();
@@ -303,7 +303,11 @@ public class RationalPolynomial {
             RationalPolynomial scaledPoly;
             int oldThisLength = thisCopy.poly.getSize();
             for (int i = 0; i <= quotientDegree; i++) {
+                // this algorithm is effectively what would be done to divide polynomials by hand
+
+                // attempt to calculate the scaler based on the last item of thisCopy
                 try{
+                    // if what should be the last item is removed by unpadPoly then throw an exception then subsequently catch it
                     thisCopy.poly.goToIth(oldThisLength - 1 - i);
                     thisLeadingTerm = thisCopy.currentRational();
                     scaler = thisLeadingTerm.divide(otherLeadingTerm);
@@ -311,9 +315,12 @@ public class RationalPolynomial {
                     scaler = new Rational(0,1);
                 }
 
+                // scale the denominator by lastTermOther/lastTermThis
+                // after subtracting this is guaranteed to reduce the degree of thisCopy
                 scaledPoly = other.scale(scaler, quotientDegree - i);
                 thisCopy = thisCopy.subtract(scaledPoly);
                 thisCopy.unPadPoly(); // take away the last leading zero
+                // construct the quotient based on the scaler
                 quotient.poly.insertFirst(scaler);
             }
             quotientRemainder.setFirst(quotient);
