@@ -25,12 +25,12 @@ public class DoublyLinkedList<I> {
         return cursor;
     }
 
-    public I getHead(){
-        return head.item();
+    public DoublyLinkedNode<I> getHead(){
+        return head;
     }
 
-    public I getTail(){
-        return tail.item();
+    public DoublyLinkedNode<I> getTail(){
+        return tail;
     }
 
     public boolean isFirst(DoublyLinkedNode<I> item){
@@ -120,36 +120,35 @@ public class DoublyLinkedList<I> {
     }
 
     public void goFirst(){
-        if(size == 0){
+        if(size == 0)
             throw new IllegalStateException("Cannot go to the first element of an empty list");
-        }
+
         cursor = head;
     }
 
     public void goLast(){
-        if(size == 0){
+        if(size == 0)
             throw new IllegalStateException("Cannot go to the last element of an empty list");
-        }
+
         cursor = tail;
     }
 
     public void goForth(){
-        if(size == 0){
+        if(size == 0)
             throw new IllegalStateException("Cannot go forth on an empty list");
-        }
-        if(this.isAfter()){
+
+        if(this.isAfter())
             throw new IllegalStateException("Cannot go to the next item while already after");
-        }
+
         cursor = this.item().getNext();
     }
 
     public void goBack(){
-        if(size == 0){
+        if(size == 0)
             throw new IllegalStateException("Cannot go back on an empty list");
-        }
-        if(isFirst(this.item())){
+
+        if(isFirst(this.item()))
             throw new IllegalStateException("Cannot go before the first element");
-        }
 
         cursor = this.item().getPrev();
     }
@@ -161,7 +160,6 @@ public class DoublyLinkedList<I> {
             throw new IllegalStateException("Cannot go past the end of a list");
         }
 
-        this.goFirst();
         for (int j = 0; j < i; j++) {
             this.goForth();
         }
