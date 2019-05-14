@@ -11,7 +11,6 @@ import static mathClasses.Rational.*;
  * Represents a polynomial with rational coefficients. Supports addition, scaling, and multiplication of polynomials
  */
 public class RationalPolynomial {
-    // TODO check and handle overflow more elegantly basically everywhere
     // TODO have anything that iterates over poly use an iterator, not a cursor
     /**
      * Rational polynomial where items further along in the list have higher degree
@@ -717,9 +716,7 @@ public class RationalPolynomial {
             }
         }
 
-
         return outString;
     }
-
 
 }

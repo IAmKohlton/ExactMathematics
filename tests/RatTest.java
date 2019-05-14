@@ -1,6 +1,7 @@
 package tests;
 
 import mathClasses.Rational;
+import mathClasses.RationalPolynomial;
 
 import static mathClasses.Rational.makeNegativeInfinity;
 import static mathClasses.Rational.makePositiveInfinity;
