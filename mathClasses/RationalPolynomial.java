@@ -477,6 +477,23 @@ public class RationalPolynomial {
     // convenience, utility, and other
     /////////////////////////////////////////
 
+    public void goFirst(){
+        poly.goFirst();
+    }
+
+    public void goLast(){
+        poly.goLast();
+    }
+
+    public void goForth(){
+        poly.goForth();
+    }
+
+    public void goBack(){
+        poly.goBack();
+    }
+
+
     /**
      * Get's the rational number currently pointed to by cursor in 'poly'
      * @return rational number in polynomial
