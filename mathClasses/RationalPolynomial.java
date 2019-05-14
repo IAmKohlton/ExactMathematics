@@ -18,7 +18,11 @@ public class RationalPolynomial {
      */
     protected DoublyLinkedList<Rational> poly;
 
-    
+
+    /////////////////////////////////////////
+    // constructors
+    /////////////////////////////////////////
+
     /**
      * create a rational polynomial of arbitrary degree
      * @param args Rational numbers to go in the polynomial where further right elements have higher degree
@@ -49,43 +53,11 @@ public class RationalPolynomial {
         return creation;
     }
 
-    /**
-     * Get's the rational number currently pointed to by cursor in 'poly'
-     * @return rational number in polynomial
-     */
-    public Rational currentRational(){
-        return this.poly.item().item();
-    }
 
-    /**
-     * Figures out whether there's no rationals in the current rational polynomial
-     * @return whether there's rationals in the polynomial
-     */
-    public boolean isNull(){
-        return this.poly.getSize() == 0;
-    }
 
-    /**
-     * obtains the degree of the current polynomial
-     * @precond 'this' must not have trailing zero terms
-     * @return degree of polynomial
-     */
-    public int getDegree(){
-        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
-
-        RationalPolynomial zero = new RationalPolynomial(R(0,1));
-        if(this.equals(zero))
-            throw new ArithmeticException("zero polynomial doesn't have a degree");
-
-        iterator.goLast();
-        if(iterator.item().equals(new Rational(0,1)))
-            throw new IllegalStateException("degree is ambiguous when polynomial has trailing zeroes");
-
-        if(this.equals(zero))
-            throw new ArithmeticException("zero polynomial doesn't have a degree");
-
-        return this.poly.getSize() - 1;
-    }
+    /////////////////////////////////////////
+    // arithmetic
+    /////////////////////////////////////////
 
     /**
      * scales this polynomial by a Rational coefficient
@@ -357,37 +329,6 @@ public class RationalPolynomial {
         return this.quotientRemainder(other).getSecond();
     }
 
-    private static void padPoly(RationalPolynomial firstPoly, RationalPolynomial secondPoly){
-        Rational zero = new Rational(0);
-        if(firstPoly.poly.getSize() < secondPoly.poly.getSize()){ // if this is of lesser degree then pad it
-            firstPoly.poly.goLast();
-            while(firstPoly.poly.getSize() < secondPoly.poly.getSize()){
-                firstPoly.poly.insert(zero);
-            }
-        }else if (firstPoly.poly.getSize() > secondPoly.poly.getSize()){ // if other is of lesser degree
-            secondPoly.poly.goLast();
-            while(firstPoly.poly.getSize() > secondPoly.poly.getSize()){
-                secondPoly.poly.insert(zero);
-            }
-        }
-    }
-
-    public void unPadPoly(){
-        Rational currentRational;
-        Rational zero = new Rational(0);
-        this.poly.goLast();
-        Rational lastRational = this.currentRational();
-        if(lastRational.equals(zero)){
-            this.poly.goLast();
-            currentRational = this.currentRational();
-            while(currentRational.equals(zero) && this.poly.getSize() > 1){
-                this.poly.delete();
-                this.poly.goLast();
-                currentRational = this.currentRational();
-            }
-        }
-    }
-
     /**
      * solve a polynmoial by plugging in a given x
      * @param xVal x^i = xVal^i
@@ -444,6 +385,136 @@ public class RationalPolynomial {
     public Rational solve(int xVal){
         return solve(new Rational(xVal));
     }
+
+    public Pair<RationalPolynomial, Long> integerize(){
+        if(this.isNull())
+            throw new IllegalStateException("Can't integerize an empty polynomial");
+
+        DoublyLinkedList<Long> denominators = new DoublyLinkedList<>();
+        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
+        iterator.goFirst();
+        while(!iterator.isAfter()){
+            denominators.insert(iterator.item().getDenom());
+            iterator.goForth();
+        }
+        Rational totalLcm = new Rational(lcmOfAll(denominators),1);
+
+        iterator.goFirst();
+        RationalPolynomial intergerized = new RationalPolynomial();
+        Rational current;
+        while(!iterator.isAfter()){
+            current = iterator.item().multiply(totalLcm);
+            intergerized.poly.insert(current);
+            iterator.goForth();
+        }
+        return new Pair<>(intergerized, totalLcm.getNumer());
+    }
+
+
+    /////////////////////////////////////////
+    // helper methods
+    /////////////////////////////////////////
+
+    private static void padPoly(RationalPolynomial firstPoly, RationalPolynomial secondPoly){
+        Rational zero = new Rational(0);
+        if(firstPoly.poly.getSize() < secondPoly.poly.getSize()){ // if this is of lesser degree then pad it
+            firstPoly.poly.goLast();
+            while(firstPoly.poly.getSize() < secondPoly.poly.getSize()){
+                firstPoly.poly.insert(zero);
+            }
+        }else if (firstPoly.poly.getSize() > secondPoly.poly.getSize()){ // if other is of lesser degree
+            secondPoly.poly.goLast();
+            while(firstPoly.poly.getSize() > secondPoly.poly.getSize()){
+                secondPoly.poly.insert(zero);
+            }
+        }
+    }
+
+    public void unPadPoly(){
+        Rational currentRational;
+        Rational zero = new Rational(0);
+        this.poly.goLast();
+        Rational lastRational = this.currentRational();
+        if(lastRational.equals(zero)){
+            this.poly.goLast();
+            currentRational = this.currentRational();
+            while(currentRational.equals(zero) && this.poly.getSize() > 1){
+                this.poly.delete();
+                this.poly.goLast();
+                currentRational = this.currentRational();
+            }
+        }
+    }
+
+    private static long lcmOfAll(DoublyLinkedList<Long> denoms){
+        DoublyLinkedList<Long> lessDenoms = new DoublyLinkedList<>();
+        Long first;
+        Long second;
+        int beforeDeletionLength = denoms.getSize();
+
+        // loop this until we've done enough passes through denoms until we've reduced it to one
+        while(beforeDeletionLength > 1){
+            while(denoms.getSize() > 1){
+                denoms.goFirst();
+                first = denoms.item().item();
+                denoms.delete();
+                second = denoms.item().item();
+                denoms.delete();
+                lessDenoms.insert(lcm(first,second));
+            }
+            denoms = lessDenoms;
+            beforeDeletionLength = denoms.getSize();
+        }
+        return denoms.getHead().item();
+    }
+
+    private static String getNChars(int n, String c){
+        return new String(new char[n]).replace("\0", c);
+    }
+
+
+    /////////////////////////////////////////
+    // convenience, utility, and other
+    /////////////////////////////////////////
+
+    /**
+     * Get's the rational number currently pointed to by cursor in 'poly'
+     * @return rational number in polynomial
+     */
+    public Rational currentRational(){
+        return this.poly.item().item();
+    }
+
+    /**
+     * Figures out whether there's no rationals in the current rational polynomial
+     * @return whether there's rationals in the polynomial
+     */
+    public boolean isNull(){
+        return this.poly.getSize() == 0;
+    }
+
+    /**
+     * obtains the degree of the current polynomial
+     * @precond 'this' must not have trailing zero terms
+     * @return degree of polynomial
+     */
+    public int getDegree(){
+        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
+
+        RationalPolynomial zero = new RationalPolynomial(R(0,1));
+        if(this.equals(zero))
+            throw new ArithmeticException("zero polynomial doesn't have a degree");
+
+        iterator.goLast();
+        if(iterator.item().equals(new Rational(0,1)))
+            throw new IllegalStateException("degree is ambiguous when polynomial has trailing zeroes");
+
+        if(this.equals(zero))
+            throw new ArithmeticException("zero polynomial doesn't have a degree");
+
+        return this.poly.getSize() - 1;
+    }
+
 
     /**
      * creates a deep clone of the current polynomial
@@ -633,54 +704,5 @@ public class RationalPolynomial {
         return outString;
     }
 
-    public Pair<RationalPolynomial, Long> integerize(){
-        if(this.isNull())
-            throw new IllegalStateException("Can't integerize an empty polynomial");
-
-        DoublyLinkedList<Long> denominators = new DoublyLinkedList<>();
-        DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
-        iterator.goFirst();
-        while(!iterator.isAfter()){
-            denominators.insert(iterator.item().getDenom());
-            iterator.goForth();
-        }
-        Rational totalLcm = new Rational(lcmOfAll(denominators),1);
-
-        iterator.goFirst();
-        RationalPolynomial intergerized = new RationalPolynomial();
-        Rational current;
-        while(!iterator.isAfter()){
-            current = iterator.item().multiply(totalLcm);
-            intergerized.poly.insert(current);
-            iterator.goForth();
-        }
-        return new Pair<>(intergerized, totalLcm.getNumer());
-    }
-
-    private static long lcmOfAll(DoublyLinkedList<Long> denoms){
-        DoublyLinkedList<Long> lessDenoms = new DoublyLinkedList<>();
-        Long first;
-        Long second;
-        int beforeDeletionLength = denoms.getSize();
-
-        // loop this until we've done enough passes through denoms until we've reduced it to one
-        while(beforeDeletionLength > 1){
-            while(denoms.getSize() > 1){
-                denoms.goFirst();
-                first = denoms.item().item();
-                denoms.delete();
-                second = denoms.item().item();
-                denoms.delete();
-                lessDenoms.insert(lcm(first,second));
-            }
-            denoms = lessDenoms;
-            beforeDeletionLength = denoms.getSize();
-        }
-        return denoms.getHead().item();
-    }
-
-    private static String getNChars(int n, String c){
-        return new String(new char[n]).replace("\0", c);
-    }
 
 }
