@@ -634,11 +634,15 @@ public class RationalPolynomial {
     }
 
     public RationalPolynomial integerize(){
+        if(this.isNull())
+            throw new IllegalStateException("Can't integerize an empty polynomial");
+
         DoublyLinkedList<Long> denominators = new DoublyLinkedList<>();
         DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
         iterator.goFirst();
         while(!iterator.isAfter()){
             denominators.insert(iterator.item().getDenom());
+            iterator.goForth();
         }
         Rational totalLcm = new Rational(lcmOfAll(denominators),1);
 
@@ -648,6 +652,7 @@ public class RationalPolynomial {
         while(!iterator.isAfter()){
             current = iterator.item().multiply(totalLcm);
             intergerized.poly.insert(current);
+            iterator.goForth();
         }
         return intergerized;
     }

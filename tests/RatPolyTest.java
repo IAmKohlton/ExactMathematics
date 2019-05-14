@@ -326,6 +326,28 @@ public class RatPolyTest {
             }
         }
 
+        // now testing integerize
+        RationalPolynomial test18 = new RationalPolynomial(R(3,4), R(-5,9), R(0,1), R(3,10), R(10,3));
+        RationalPolynomial test19 = new RationalPolynomial(R(135,1), R(-100, 1), R(0,1), R(54,1), R(600,1));
+        if(!(test18.integerize().equals(test19))){
+            System.out.println("When trying to integerize");
+            System.out.println(test18);
+            System.out.println("got");
+            System.out.println(test19);
+        }
+
+        caught = false;
+        try{
+            (new RationalPolynomial()).integerize();
+        }catch (IllegalStateException e){
+            caught = true;
+        }
+        if(!caught){
+            System.out.println("didn't catch error on null polynomial");
+        }
+
+
+
         if(!quietEnding)
             System.out.println("Rational polynomial tests complete");
 
