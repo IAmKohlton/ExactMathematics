@@ -7,10 +7,10 @@ One of the tenets of development I'm using for this is to develop everything fro
 
 
 # TODO
-Integerize a polynomial
+Factor a polynomial over the rational numbers
 
 Manage overflow, and deal with it gracefully
 
-arbitrary precision integers
+Arbitrary precision integers
 
 Use concurrency to speed up polynomial operations
