@@ -329,12 +329,15 @@ public class RatPolyTest {
         // now testing integerize
         RationalPolynomial test18 = new RationalPolynomial(R(3,4), R(-5,9), R(0,1), R(3,10), R(10,3));
         RationalPolynomial test19 = new RationalPolynomial(R(135,1), R(-100, 1), R(0,1), R(54,1), R(600,1));
-        if(!(test18.integerize().equals(test19))){
+        if(!(test18.integerize().getFirst().equals(test19))){
             System.out.println("When trying to integerize");
             System.out.println(test18);
             System.out.println("got");
             System.out.println(test19);
         }
+
+        if(!(test18.integerize().getSecond() == 180L))
+            System.out.println("Didn't calculate the lcm properly");
 
         caught = false;
         try{

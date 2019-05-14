@@ -633,7 +633,7 @@ public class RationalPolynomial {
         return outString;
     }
 
-    public RationalPolynomial integerize(){
+    public Pair<RationalPolynomial, Long> integerize(){
         if(this.isNull())
             throw new IllegalStateException("Can't integerize an empty polynomial");
 
@@ -654,7 +654,7 @@ public class RationalPolynomial {
             intergerized.poly.insert(current);
             iterator.goForth();
         }
-        return intergerized;
+        return new Pair<>(intergerized, totalLcm.getNumer());
     }
 
     private static long lcmOfAll(DoublyLinkedList<Long> denoms){

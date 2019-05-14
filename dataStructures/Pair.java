@@ -4,6 +4,16 @@ public class Pair<I, J> {
     I first;
     J second;
 
+    public Pair(){
+        first = null;
+        second = null;
+    }
+
+    public Pair(I first, J second){
+        this.first = first;
+        this.second = second;
+    }
+
     public I getFirst() {
         return first;
     }
