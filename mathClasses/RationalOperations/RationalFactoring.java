@@ -1,9 +1,19 @@
-package mathClasses;
+package mathClasses.RationalOperations;
 
 import dataStructures.DoublyLinkedList;
+import mathClasses.RationalPolynomial;
 
-public class RationalFactoring {
-    public static void factor(RationalPolynomial polynomial){
+public class RationalFactoring extends Operation{
+
+    public RationalFactoring(RationalPolynomial poly){
+        super(poly);
+    }
+
+    public void compute(){
+    }
+
+    private static DoublyLinkedList<RationalPolynomial> factor(){
+        return null;
     }
 
     private static int eisenstein(RationalPolynomial polynomial){
