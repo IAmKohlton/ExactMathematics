@@ -68,11 +68,4 @@ public class RationalFactoring extends Operation{
         return factorList;
     }
 
-    public static void main(String[] args){
-        System.out.println(factorize(2));
-        System.out.println(factorize(8));
-        System.out.println(factorize(360));
-        System.out.println(factorize(4));
-        System.out.println(factorize(4));
-    }
 }
