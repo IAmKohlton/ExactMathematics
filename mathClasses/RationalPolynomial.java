@@ -490,6 +490,9 @@ public class RationalPolynomial implements RationalOperationOutput {
         poly.goBack();
     }
 
+    public Rational getFirst(){return poly.getHead().item();}
+
+    public Rational getLast(){return poly.getTail().item();}
 
     /**
      * Get's the rational number currently pointed to by cursor in 'poly'
@@ -715,6 +718,10 @@ public class RationalPolynomial implements RationalOperationOutput {
         }
 
         return outString;
+    }
+
+    public RationalPolyIterator getIterator(){
+        return new RationalPolyIterator(this);
     }
 
 }

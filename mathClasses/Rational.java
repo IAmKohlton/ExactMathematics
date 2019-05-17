@@ -612,6 +612,15 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
 
     }
 
+    public static Long toLong(Rational rat){
+        if(rat.getDenom() != 1)
+            throw new ArithmeticException("Conversion to an integer from a non integer rational can't be done");
+        if(rat.isInfinity())
+            throw new ArithmeticException("Cannot convert infinity to a long");
+        long sign = rat.getSign() ? -1 : 1;
+        return sign * rat.getNumer();
+    }
+
     public Rational clone(){
         Rational theClone = new Rational(0,1);
         theClone.numer = this.numer;

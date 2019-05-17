@@ -2,6 +2,8 @@ package mathClasses.RationalOperations;
 
 import dataStructures.DoublyLinkedList;
 import dataStructures.Pair;
+import mathClasses.Rational;
+import mathClasses.RationalPolyIterator;
 import mathClasses.RationalPolynomial;
 
 public class RationalFactoring extends Operation{
@@ -17,9 +19,49 @@ public class RationalFactoring extends Operation{
         return null;
     }
 
-    private static int eisenstein(RationalPolynomial polynomial){
+    private static long eisenstein(RationalPolynomial polynomial){
+        RationalPolyIterator iterator = polynomial.getIterator();
+        polynomial.goFirst();
+        Long constant = Rational.toLong(iterator.getCurrentRational());
+        DoublyLinkedList<Pair<Long, Integer>> primeDivisorsOfConstant = primeFactors(constant);
+        Long prime;
+        primeDivisorsOfConstant.goFirst();
 
-        DoublyLinkedList<Pair<Long, Integer>> primeDivisorsOfConstant = polynomial.getFirst();
+        boolean continueLoop;
+
+        // the basic flow of this is that if we look at every prime, and check them against the given criteria one by one
+        // if they don't follow a criterion then we 'continue'
+        // if we find a prime that follows all criteria then we know that it's irreducible
+        while(!primeDivisorsOfConstant.isAfter()){
+            primeDivisorsOfConstant.goForth();
+            prime = primeDivisorsOfConstant.item().item().getFirst(); // lots of nested data structures *sigh*
+
+            // if the highest order term divides the prime then it doesn't satisfy the criterion
+            if(Rational.toLong(polynomial.getLast()) % prime == 0){
+                continue;
+            }
+
+            // if the lowest order term divides the prime squared then it doesn't satisfy the criterion
+            if(Rational.toLong(polynomial.getFirst()) % (prime * prime) == 0){
+                continue;
+            }
+
+            iterator.goForth();
+            // if all the terms but the last term also divide the polynomial then it satisfies the last criterion
+            continueLoop = false;
+            while(!iterator.isLast()){
+                if(Rational.toLong(iterator.getCurrentRational()) % prime != 0){
+                    continueLoop = true;
+                    break;
+                }
+            }
+            if(continueLoop){
+                continue;
+            }
+
+            return prime;
+        }
+        return -1;
     }
 
     private static DoublyLinkedList<Pair<Long,Integer>> primeFactors(long integer){
