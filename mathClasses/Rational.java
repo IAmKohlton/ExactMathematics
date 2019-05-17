@@ -1,9 +1,11 @@
 package mathClasses;
 
+import mathClasses.RationalOperations.RationalOperationOutput;
+
 /**
  * Rational representation of numbers that includes infinity.
  */
-public class Rational implements Comparable<Rational> {
+public class Rational implements Comparable<Rational>, RationalOperationOutput, Cloneable {
     /**
      * numerator for the given rational number
      */
@@ -610,5 +612,17 @@ public class Rational implements Comparable<Rational> {
 
     }
 
+    public Rational clone(){
+        Rational theClone = new Rational(0,1);
+        theClone.numer = this.numer;
+        theClone.denom = this.denom;
+        theClone.infinity = this.infinity;
+        theClone.sign = this.sign;
+        return theClone;
+    }
+
+    public Rational getOutput(){
+        return this;
+    }
 
 }

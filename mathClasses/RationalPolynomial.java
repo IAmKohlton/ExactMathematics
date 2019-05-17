@@ -2,16 +2,15 @@ package mathClasses;
 
 import dataStructures.DoublyLinkedList;
 import dataStructures.DoublyLinkedListIterator;
-import dataStructures.DoublyLinkedNode;
 import dataStructures.Pair;
+import mathClasses.RationalOperations.RationalOperationOutput;
 
 import static mathClasses.Rational.*;
 
 /**
  * Represents a polynomial with rational coefficients. Supports addition, scaling, and multiplication of polynomials
  */
-public class RationalPolynomial {
-    // TODO have anything that iterates over poly use an iterator, not a cursor
+public class RationalPolynomial implements RationalOperationOutput {
     /**
      * Rational polynomial where items further along in the list have higher degree
      */
@@ -717,6 +716,10 @@ public class RationalPolynomial {
         }
 
         return outString;
+    }
+
+    public RationalPolynomial getOutput(){
+        return this;
     }
 
 }
