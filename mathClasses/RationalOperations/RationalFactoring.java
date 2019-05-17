@@ -18,7 +18,8 @@ public class RationalFactoring extends Operation{
     }
 
     private static int eisenstein(RationalPolynomial polynomial){
-        return 0;
+
+        DoublyLinkedList<Pair<Long, Integer>> primeDivisorsOfConstant = polynomial.getFirst();
     }
 
     private static DoublyLinkedList<Pair<Long,Integer>> primeFactors(long integer){
