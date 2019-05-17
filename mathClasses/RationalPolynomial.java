@@ -717,8 +717,4 @@ public class RationalPolynomial implements RationalOperationOutput {
         return outString;
     }
 
-    public RationalPolynomial getOutput(){
-        return this;
-    }
-
 }

@@ -620,9 +620,4 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
         theClone.sign = this.sign;
         return theClone;
     }
-
-    public Rational getOutput(){
-        return this;
-    }
-
 }

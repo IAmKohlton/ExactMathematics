@@ -4,9 +4,10 @@ import mathClasses.Rational;
 import mathClasses.RationalPolynomial;
 
 public abstract class Operation {
-    RationalPolynomial firstPoly;
-    RationalPolynomial secondPoly;
-    Rational constant;
+    protected RationalPolynomial firstPoly;
+    protected RationalPolynomial secondPoly;
+    protected Rational constant;
+    protected RationalOperationOutput output;
 
     public Operation(RationalPolynomial firstPoly, RationalPolynomial secondPoly, Rational constant){
         this.firstPoly = firstPoly;
@@ -26,5 +27,9 @@ public abstract class Operation {
         this(poly, null, null);
     }
 
-    public abstract void compute();
+    public abstract void compute(); // the only requirement of compute is that it must set 'output' to the result of the computation
+
+    public RationalOperationOutput getOutput(){
+        return output;
+    }
 }
