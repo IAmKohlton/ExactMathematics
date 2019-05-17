@@ -8,9 +8,6 @@ public abstract class Operation {
     RationalPolynomial secondPoly;
     Rational constant;
 
-    RationalPolynomial outputPoly;
-    Rational outputConstant;
-
     public Operation(RationalPolynomial firstPoly, RationalPolynomial secondPoly, Rational constant){
         this.firstPoly = firstPoly;
         this.secondPoly = secondPoly;

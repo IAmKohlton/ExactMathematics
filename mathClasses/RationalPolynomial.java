@@ -445,23 +445,22 @@ public class RationalPolynomial implements RationalOperationOutput {
     }
 
     private static long lcmOfAll(DoublyLinkedList<Long> denoms){
-        DoublyLinkedList<Long> lessDenoms = new DoublyLinkedList<>();
+        if(denoms.getSize() == 0)
+            throw new IllegalStateException("Cannot take the lcm of an empty list");
+
         Long first;
         Long second;
-        int beforeDeletionLength = denoms.getSize();
+        Long result;
 
+        denoms.goFirst();
         // loop this until we've done enough passes through denoms until we've reduced it to one
-        while(beforeDeletionLength > 1){
-            while(denoms.getSize() > 1){
-                denoms.goFirst();
-                first = denoms.item().item();
-                denoms.delete();
-                second = denoms.item().item();
-                denoms.delete();
-                lessDenoms.insert(lcm(first,second));
-            }
-            denoms = lessDenoms;
-            beforeDeletionLength = denoms.getSize();
+        while(denoms.getSize() > 1){
+            first = denoms.item().item();
+            denoms.delete();
+            second = denoms.item().item();
+            denoms.delete();
+            result = lcm(first,second);
+            denoms.insert(result);
         }
         return denoms.getHead().item();
     }
