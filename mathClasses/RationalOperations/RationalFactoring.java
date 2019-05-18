@@ -1,7 +1,9 @@
 package mathClasses.RationalOperations;
 
 import dataStructures.DoublyLinkedList;
+import dataStructures.DoublyLinkedListIterator;
 import dataStructures.Pair;
+import mathClasses.ProductOfPolynomial;
 import mathClasses.Rational;
 import mathClasses.RationalPolyIterator;
 import mathClasses.RationalPolynomial;
@@ -17,8 +19,38 @@ public class RationalFactoring extends Operation{
     public void compute(){
     }
 
-    private static DoublyLinkedList<RationalPolynomial> factor(){
-        return null;
+    private static ProductOfPolynomial factor(RationalPolynomial polynomial){
+        if(polynomial.getDegree() == 0){
+            // return a polynomial that's just the constant term
+            ProductOfPolynomial constant = new ProductOfPolynomial(new RationalPolynomial(polynomial.getFirst()));
+            return constant;
+        }
+        if(eisenstein(polynomial) != -1L){
+            // if it's irreducible by eisenstiens criterion
+            return new ProductOfPolynomial(polynomial.copy());
+        }
+
+        Rational constant = polynomial.getFirst();
+        Rational highestOrder = polynomial.getLast();
+
+        Rational potentialFactor;
+        DoublyLinkedList<Long> constantFactors = allFactors(Rational.toLong(constant));
+        DoublyLinkedList<Long> highestOrderFactors = allFactors(Rational.toLong(highestOrder));
+        DoublyLinkedListIterator<Long> constantIterator = constantFactors.getIterator();
+        DoublyLinkedListIterator<Long> highestIterator = highestOrderFactors.getIterator();
+        constantIterator.goFirst();
+        while(!constantIterator.isAfter()){
+            highestIterator.goFirst();
+            while(!highestIterator.isAfter()){
+                potentialFactor = new Rational(constantIterator.getCurrentNode().item(), highestIterator.getCurrentNode().item());
+                if(polynomial.solve(potentialFactor).equals(new Rational(0,1))){
+                    
+                }
+
+                highestIterator.goForth();
+            }
+            constantIterator.goForth();
+        }
     }
 
     private static long eisenstein(RationalPolynomial polynomial){
