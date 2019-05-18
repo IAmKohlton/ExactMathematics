@@ -6,6 +6,8 @@ import mathClasses.Rational;
 import mathClasses.RationalPolyIterator;
 import mathClasses.RationalPolynomial;
 
+import static mathClasses.Rational.R;
+
 public class RationalFactoring extends Operation{
 
     public RationalFactoring(RationalPolynomial poly){
@@ -22,6 +24,7 @@ public class RationalFactoring extends Operation{
     private static long eisenstein(RationalPolynomial polynomial){
         RationalPolyIterator iterator = polynomial.getIterator();
         polynomial.goFirst();
+        iterator.goFirst();
         Long constant = Rational.toLong(iterator.getCurrentRational());
         DoublyLinkedList<Pair<Long, Integer>> primeDivisorsOfConstant = primeFactors(constant);
         Long prime;
@@ -33,9 +36,9 @@ public class RationalFactoring extends Operation{
         // if they don't follow a criterion then we 'continue'
         // if we find a prime that follows all criteria then we know that it's irreducible
         while(!primeDivisorsOfConstant.isAfter()){
-            primeDivisorsOfConstant.goForth();
-            prime = primeDivisorsOfConstant.item().item().getFirst(); // lots of nested data structures *sigh*
 
+            prime = primeDivisorsOfConstant.item().item().getFirst(); // lots of nested data structures *sigh*
+            primeDivisorsOfConstant.goForth();
             // if the highest order term divides the prime then it doesn't satisfy the criterion
             if(Rational.toLong(polynomial.getLast()) % prime == 0){
                 continue;
@@ -46,7 +49,7 @@ public class RationalFactoring extends Operation{
                 continue;
             }
 
-            iterator.goForth();
+            iterator.goFirst();
             // if all the terms but the last term also divide the polynomial then it satisfies the last criterion
             continueLoop = false;
             while(!iterator.isLast()){
@@ -54,6 +57,7 @@ public class RationalFactoring extends Operation{
                     continueLoop = true;
                     break;
                 }
+                iterator.goForth();
             }
             if(continueLoop){
                 continue;
@@ -64,6 +68,7 @@ public class RationalFactoring extends Operation{
         return -1;
     }
 
+
     private static DoublyLinkedList<Pair<Long,Integer>> primeFactors(long integer){
         if(integer < 1)
             throw new ArithmeticException("Cannot factorize number less than zero");
@@ -73,7 +78,7 @@ public class RationalFactoring extends Operation{
         int i = 0;
         int power;
         Pair<Long, Integer> factorPowerCombo;
-        while(brokenDownInt != arrayPrimeNumbers[i] && arrayPrimeNumbers[i] != 211){
+        while(brokenDownInt != 1 && arrayPrimeNumbers[i] != 211){
             power = 0;
             while(brokenDownInt % arrayPrimeNumbers[i] == 0){
                 power++;
@@ -103,12 +108,51 @@ public class RationalFactoring extends Operation{
 
     private static DoublyLinkedList<Long> allFactors(long integer){
         DoublyLinkedList<Long> factorList = new DoublyLinkedList<>();
-        for (int i = 1; i <= integer; i++) {
+        for (long i = 1; i <= integer; i++) {
             if(integer % i == 0){
-                factorList.insert((long)i);
+                factorList.insert(i);
             }
         }
         return factorList;
+    }
+
+    public static void main(String[] args){
+        RationalPolynomial positiveTest = new RationalPolynomial(R(2,1), R(4,1), R(6,1), R(3,1));
+        long prime = eisenstein(positiveTest);
+        if(prime != 2L)
+            System.out.println("Doesn't find p=2");
+
+        RationalPolynomial negativeTest = new RationalPolynomial(R(4,1), R(4,1), R(6,1), R(8,1));
+        prime = eisenstein(negativeTest);
+        if(prime != -1L)
+            System.out.println("Thinks the constant term doesn't divide the prime squared");
+
+        RationalPolynomial negativeTest2 = new RationalPolynomial(R(2,1), R(4,1), R(6,1), R(2,1));
+        prime = eisenstein(negativeTest2);
+        if(prime != -1L)
+            System.out.println("Thinks the highest order term doesn't divide the prime");
+
+        RationalPolynomial negativeTest3 = new RationalPolynomial(R(2,1), R(3,1), R(4,1), R(3,1));
+        prime = eisenstein(negativeTest3);
+        if(prime != -1L)
+            System.out.println("Thinks all medium order terms divide 2");
+
+        RationalPolynomial negativeTest4 = new RationalPolynomial(R(3,1), R(2,1), R(4,1), R(3,1));
+        prime = eisenstein(negativeTest4);
+        if(prime != -1L)
+            System.out.println("Thinks eisensteins criterion applies");
+
+        RationalPolynomial positiveTest2 = new RationalPolynomial(R(6,1), R(2,1), R(4,1), R(5,1));
+        prime = eisenstein(positiveTest2);
+        if(prime != 2L)
+            System.out.println("doesn't think eisensteins criterion applies with p=2");
+
+        RationalPolynomial positiveTest3 = new RationalPolynomial(R(6,1), R(3,1), R(6,1), R(5,1));
+        prime = eisenstein(positiveTest3);
+        if(prime != 3L) {
+            System.out.println(prime);
+            System.out.println("doesn't think the criterion applies with p=3");
+        }
     }
 
 }
