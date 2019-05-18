@@ -24,4 +24,8 @@ public class ProductOfPolynomial implements RationalOperationOutput {
         return product;
     }
 
+    public void insertFactor(RationalPolynomial poly){
+        listOfPolys.insert(poly);
+    }
+
 }

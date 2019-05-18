@@ -39,18 +39,27 @@ public class RationalFactoring extends Operation{
         DoublyLinkedListIterator<Long> constantIterator = constantFactors.getIterator();
         DoublyLinkedListIterator<Long> highestIterator = highestOrderFactors.getIterator();
         constantIterator.goFirst();
+
+        RationalPolynomial factor;
+        ProductOfPolynomial factorization = new ProductOfPolynomial();
+        Rational zero = new Rational(0,1);
+
         while(!constantIterator.isAfter()){
             highestIterator.goFirst();
             while(!highestIterator.isAfter()){
                 potentialFactor = new Rational(constantIterator.getCurrentNode().item(), highestIterator.getCurrentNode().item());
-                if(polynomial.solve(potentialFactor).equals(new Rational(0,1))){
-                    
+                while(polynomial.solve(potentialFactor).equals(zero)){
+                    // then the new factor is x - potentialFactor by the factor theorem
+                    factor = new RationalPolynomial(zero.subtract(potentialFactor), new Rational(1,1));
+                    factorization.insertFactor(factor);
+                    polynomial = polynomial.divide(factor);
                 }
 
                 highestIterator.goForth();
             }
             constantIterator.goForth();
         }
+        return factorization;
     }
 
     private static long eisenstein(RationalPolynomial polynomial){
