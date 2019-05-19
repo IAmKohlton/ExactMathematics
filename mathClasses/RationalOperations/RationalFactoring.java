@@ -14,24 +14,27 @@ public class RationalFactoring extends Operation{
 
     public RationalFactoring(RationalPolynomial poly){
         super(poly);
-        compute();
+        // not sure if I should have that in the constructor, or whether that should be something explicitly done by the programmer
+        // compute();
     }
 
     public void compute(){
-
+        output = factor(firstPoly);
     }
 
     private static ProductOfPolynomial factor(RationalPolynomial polynomial){
-        if(polynomial.getDegree() == 0){
-            // return a polynomial that's just the constant term
-            ProductOfPolynomial constant = new ProductOfPolynomial(1L, new RationalPolynomial(polynomial.getFirst()));
-            return constant;
-        }
+        // this uses the rational roots test saying that every possible factor must be of the form r/s
+        // where r divides the constant term and s divides the highest order term
 
         // integerize the polynomial
         Pair<RationalPolynomial, Long> integerized = polynomial.integerize();
         Long scalerTerm = integerized.getSecond();
         RationalPolynomial integerPoly = integerized.getFirst();
+
+        if(polynomial.getDegree() == 0){
+            // return a polynomial that's just the constant term
+            return new ProductOfPolynomial(Rational.toLong(integerPoly.getFirst()));
+        }
 
         if(eisenstein(integerPoly) != -1L){
             // if it's irreducible by eisenstiens criterion
@@ -52,12 +55,14 @@ public class RationalFactoring extends Operation{
         ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm);
         Rational zero = new Rational(0,1);
 
+        // loop through every possible factor
         while(!constantIterator.isAfter()){
             highestIterator.goFirst();
             while(!highestIterator.isAfter()){
+                // the potentialFactor is r/s from before
                 potentialFactor = new Rational(constantIterator.getCurrentNode().item(), highestIterator.getCurrentNode().item());
                 while(integerPoly.solve(potentialFactor).equals(zero)){
-                    // then the new factor is x - potentialFactor by the factor theorem
+                    // then the new factor is (x - potentialFactor) by the factor theorem
                     factor = new RationalPolynomial(zero.subtract(potentialFactor), new Rational(1,1));
                     factorization.insertFactor(factor);
                     integerPoly = integerPoly.divide(factor);
@@ -222,7 +227,9 @@ public class RationalFactoring extends Operation{
         }
 
         // now test all the positive cases against
-
+        RationalFactoring irreducible1 = new RationalFactoring(positiveTest);
+        irreducible1.compute();
+        ProductOfPolynomial irreducibleProduct1 = (ProductOfPolynomial) irreducible1.getOutput();
     }
 
 }
