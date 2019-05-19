@@ -234,6 +234,10 @@ public class RationalFactoring extends Operation{
         RationalFactoring irreducible1 = new RationalFactoring(positiveTest);
         irreducible1.compute();
         ProductOfPolynomial irreducibleProduct1 = irreducible1.getOutput();
+        ProductOfPolynomial irreducibleProductExpected1 = new ProductOfPolynomial(1L, positiveTest);
+        if (!(irreducibleProductExpected1.equals(irreducibleProduct1))){
+            System.out.println("Didn't properly factorize an irreducible polynomial");
+        }
     }
 
 }

@@ -25,6 +25,29 @@ public class ProductOfPolynomial implements RationalOperationOutput {
         return product;
     }
 
+    public boolean equals(ProductOfPolynomial other){
+        if(!(other.getConstant().equals(constant))){
+            return false;
+        }else if(other.getSize() != this.getSize()){
+            return false;
+        }else{
+            this.goFirst();
+            other.goFirst();
+            while(!this.isAfter()){
+                if(!(this.getFactor().equals(other.getFactor()))){
+                    return false;
+                }
+                this.goForth();
+                other.goForth();
+            }
+        }
+        return true;
+    }
+
+    public int getSize(){
+        return listOfPolys.getSize();
+    }
+
     public Long getConstant() {
         return constant;
     }
@@ -51,6 +74,10 @@ public class ProductOfPolynomial implements RationalOperationOutput {
 
     public void goBack(){
         listOfPolys.goBack();
+    }
+
+    public boolean isAfter(){
+        return listOfPolys.isAfter();
     }
 
     public RationalPolynomial getFactor(){
