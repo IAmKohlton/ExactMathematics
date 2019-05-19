@@ -14,24 +14,32 @@ public class RationalFactoring extends Operation{
 
     public RationalFactoring(RationalPolynomial poly){
         super(poly);
+        compute();
     }
 
     public void compute(){
+
     }
 
     private static ProductOfPolynomial factor(RationalPolynomial polynomial){
         if(polynomial.getDegree() == 0){
             // return a polynomial that's just the constant term
-            ProductOfPolynomial constant = new ProductOfPolynomial(new RationalPolynomial(polynomial.getFirst()));
+            ProductOfPolynomial constant = new ProductOfPolynomial(1L, new RationalPolynomial(polynomial.getFirst()));
             return constant;
         }
-        if(eisenstein(polynomial) != -1L){
+
+        // integerize the polynomial
+        Pair<RationalPolynomial, Long> integerized = polynomial.integerize();
+        Long scalerTerm = integerized.getSecond();
+        RationalPolynomial integerPoly = integerized.getFirst();
+
+        if(eisenstein(integerPoly) != -1L){
             // if it's irreducible by eisenstiens criterion
-            return new ProductOfPolynomial(polynomial.copy());
+            return new ProductOfPolynomial(scalerTerm, integerPoly.copy());
         }
 
-        Rational constant = polynomial.getFirst();
-        Rational highestOrder = polynomial.getLast();
+        Rational constant = integerPoly.getFirst();
+        Rational highestOrder = integerPoly.getLast();
 
         Rational potentialFactor;
         DoublyLinkedList<Long> constantFactors = allFactors(Rational.toLong(constant));
@@ -41,18 +49,18 @@ public class RationalFactoring extends Operation{
         constantIterator.goFirst();
 
         RationalPolynomial factor;
-        ProductOfPolynomial factorization = new ProductOfPolynomial();
+        ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm);
         Rational zero = new Rational(0,1);
 
         while(!constantIterator.isAfter()){
             highestIterator.goFirst();
             while(!highestIterator.isAfter()){
                 potentialFactor = new Rational(constantIterator.getCurrentNode().item(), highestIterator.getCurrentNode().item());
-                while(polynomial.solve(potentialFactor).equals(zero)){
+                while(integerPoly.solve(potentialFactor).equals(zero)){
                     // then the new factor is x - potentialFactor by the factor theorem
                     factor = new RationalPolynomial(zero.subtract(potentialFactor), new Rational(1,1));
                     factorization.insertFactor(factor);
-                    polynomial = polynomial.divide(factor);
+                    integerPoly = integerPoly.divide(factor);
                 }
 
                 highestIterator.goForth();
@@ -62,8 +70,26 @@ public class RationalFactoring extends Operation{
         return factorization;
     }
 
+    /**
+     * checks if a polynomial with integer coefficients satisfies eisenstein's criterion.
+     * @param polynomial non-null RationalPolynomial
+     * @precond rational polynomial must have integer coefficients. polynomial can't be null
+     * @return -1 if the polynomial doesn't satisfy the criterion. Otherwise it gives the lowest prime number for which the criterion is satisfied
+     */
     private static long eisenstein(RationalPolynomial polynomial){
+        if(polynomial.isNull())
+            throw new IllegalStateException("Cannot factor a null polynomial");
+
         RationalPolyIterator iterator = polynomial.getIterator();
+
+        iterator.goFirst();
+        while(!iterator.isAfter()){
+            if(iterator.getCurrentRational().getDenom() != 1){
+                throw new IllegalStateException("Cannot apply eisenstien's criterion with non-integer coefficients");
+            }
+            iterator.goFirst();
+        }
+
         polynomial.goFirst();
         iterator.goFirst();
         Long constant = Rational.toLong(iterator.getCurrentRational());
@@ -194,6 +220,9 @@ public class RationalFactoring extends Operation{
             System.out.println(prime);
             System.out.println("doesn't think the criterion applies with p=3");
         }
+
+        // now test all the positive cases against
+
     }
 
 }

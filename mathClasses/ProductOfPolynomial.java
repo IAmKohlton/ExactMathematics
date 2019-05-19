@@ -5,9 +5,10 @@ import dataStructures.DoublyLinkedListIterator;
 import mathClasses.RationalOperations.RationalOperationOutput;
 
 public class ProductOfPolynomial implements RationalOperationOutput {
-    DoublyLinkedList<RationalPolynomial> listOfPolys;
+    protected DoublyLinkedList<RationalPolynomial> listOfPolys;
+    Long constant;
 
-    public ProductOfPolynomial(RationalPolynomial ... polys){
+    public ProductOfPolynomial(Long constant, RationalPolynomial ... polys){
         listOfPolys = new DoublyLinkedList<>();
         for(RationalPolynomial x : polys){
             listOfPolys.insert(x);
@@ -24,8 +25,36 @@ public class ProductOfPolynomial implements RationalOperationOutput {
         return product;
     }
 
+    public Long getConstant() {
+        return constant;
+    }
+
+    public void setConstant(Long constant) {
+        this.constant = constant;
+    }
+
     public void insertFactor(RationalPolynomial poly){
         listOfPolys.insert(poly);
+    }
+
+    public void goFirst(){
+        listOfPolys.goFirst();
+    }
+
+    public void goForth(){
+        listOfPolys.goForth();
+    }
+
+    public void goLast(){
+        listOfPolys.goLast();
+    }
+
+    public void goBack(){
+        listOfPolys.goBack();
+    }
+
+    public RationalPolynomial getFactor(){
+        return listOfPolys.item().item();
     }
 
 }
