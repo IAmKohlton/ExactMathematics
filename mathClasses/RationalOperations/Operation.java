@@ -29,7 +29,5 @@ public abstract class Operation {
 
     public abstract void compute(); // the only requirement of compute is that it must set 'output' to the result of the computation
 
-    public RationalOperationOutput getOutput(){
-        return output;
-    }
+    public abstract RationalOperationOutput getOutput();
 }

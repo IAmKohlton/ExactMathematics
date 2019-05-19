@@ -22,6 +22,10 @@ public class RationalFactoring extends Operation{
         output = factor(firstPoly);
     }
 
+    public ProductOfPolynomial getOutput(){
+        return (ProductOfPolynomial) output;
+    }
+
     private static ProductOfPolynomial factor(RationalPolynomial polynomial){
         // this uses the rational roots test saying that every possible factor must be of the form r/s
         // where r divides the constant term and s divides the highest order term
@@ -229,7 +233,7 @@ public class RationalFactoring extends Operation{
         // now test all the positive cases against
         RationalFactoring irreducible1 = new RationalFactoring(positiveTest);
         irreducible1.compute();
-        ProductOfPolynomial irreducibleProduct1 = (ProductOfPolynomial) irreducible1.getOutput();
+        ProductOfPolynomial irreducibleProduct1 = irreducible1.getOutput();
     }
 
 }
