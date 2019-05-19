@@ -85,7 +85,7 @@ public class RationalFactoring extends Operation{
      * @precond rational polynomial must have integer coefficients. polynomial can't be null
      * @return -1 if the polynomial doesn't satisfy the criterion. Otherwise it gives the lowest prime number for which the criterion is satisfied
      */
-    private static long eisenstein(RationalPolynomial polynomial){
+    public static long eisenstein(RationalPolynomial polynomial){
         if(polynomial.isNull())
             throw new IllegalStateException("Cannot factor a null polynomial");
 
@@ -191,53 +191,4 @@ public class RationalFactoring extends Operation{
         }
         return factorList;
     }
-
-    public static void main(String[] args){
-        RationalPolynomial positiveTest = new RationalPolynomial(R(2,1), R(4,1), R(6,1), R(3,1));
-        long prime = eisenstein(positiveTest);
-        if(prime != 2L)
-            System.out.println("Doesn't find p=2");
-
-        RationalPolynomial negativeTest = new RationalPolynomial(R(4,1), R(4,1), R(6,1), R(8,1));
-        prime = eisenstein(negativeTest);
-        if(prime != -1L)
-            System.out.println("Thinks the constant term doesn't divide the prime squared");
-
-        RationalPolynomial negativeTest2 = new RationalPolynomial(R(2,1), R(4,1), R(6,1), R(2,1));
-        prime = eisenstein(negativeTest2);
-        if(prime != -1L)
-            System.out.println("Thinks the highest order term doesn't divide the prime");
-
-        RationalPolynomial negativeTest3 = new RationalPolynomial(R(2,1), R(3,1), R(4,1), R(3,1));
-        prime = eisenstein(negativeTest3);
-        if(prime != -1L)
-            System.out.println("Thinks all medium order terms divide 2");
-
-        RationalPolynomial negativeTest4 = new RationalPolynomial(R(3,1), R(2,1), R(4,1), R(3,1));
-        prime = eisenstein(negativeTest4);
-        if(prime != -1L)
-            System.out.println("Thinks eisensteins criterion applies");
-
-        RationalPolynomial positiveTest2 = new RationalPolynomial(R(6,1), R(2,1), R(4,1), R(5,1));
-        prime = eisenstein(positiveTest2);
-        if(prime != 2L)
-            System.out.println("doesn't think eisensteins criterion applies with p=2");
-
-        RationalPolynomial positiveTest3 = new RationalPolynomial(R(6,1), R(3,1), R(6,1), R(5,1));
-        prime = eisenstein(positiveTest3);
-        if(prime != 3L) {
-            System.out.println(prime);
-            System.out.println("doesn't think the criterion applies with p=3");
-        }
-
-        // now test all the positive cases against
-        RationalFactoring irreducible1 = new RationalFactoring(positiveTest);
-        irreducible1.compute();
-        ProductOfPolynomial irreducibleProduct1 = irreducible1.getOutput();
-        ProductOfPolynomial irreducibleProductExpected1 = new ProductOfPolynomial(1L, positiveTest);
-        if (!(irreducibleProductExpected1.equals(irreducibleProduct1))){
-            System.out.println("Didn't properly factorize an irreducible polynomial");
-        }
-    }
-
 }
