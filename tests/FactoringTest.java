@@ -70,7 +70,7 @@ public class FactoringTest {
 
 
         // check if (x+1)*(x-1) factors correctly
-        RationalPolynomial reducible1 = new RationalPolynomial(R(1,1), R(0,1), R(-1,1));
+        RationalPolynomial reducible1 = new RationalPolynomial(R(-1,1), R(0,1), R(1,1));
         RationalPolynomial reducible1factor1 = new RationalPolynomial(R(1,1), R(1,1));
         RationalPolynomial reducible1factor2 = new RationalPolynomial(R(-1,1), R(1,1));
         ProductOfPolynomial reducibleFactorization1Expected = new ProductOfPolynomial(1L, reducible1factor1, reducible1factor2);
@@ -94,12 +94,14 @@ public class FactoringTest {
             for (int j = -5; j < 5; j++) {
                 for (int k = -5; k < 5; k++) {
                     for (int l = -5; l < 5; l++) {
+
                         term1 = new RationalPolynomial(R(i,1), R(j,1));
                         term1.unPadPoly();
                         term2 = new RationalPolynomial(R(k,1), R(l,1));
                         term2.unPadPoly();
                         resultOfMultiplication = term1.multiply(term2);
                         resultObject = new RationalFactoring(resultOfMultiplication);
+
                         resultObject.compute();
                         result = resultObject.getOutput();
                         expectedResult = new ProductOfPolynomial(1L, term1, term2);

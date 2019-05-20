@@ -30,10 +30,19 @@ public class RationalFactoring extends Operation{
         // this uses the rational roots test saying that every possible factor must be of the form r/s
         // where r divides the constant term and s divides the highest order term
 
+        if(polynomial.isNull()) {
+            System.out.println(polynomial);
+            throw new IllegalStateException("Cannot factor an empty polynomial");
+        }
+
         // integerize the polynomial
         Pair<RationalPolynomial, Long> integerized = polynomial.integerize();
         Long scalerTerm = integerized.getSecond();
         RationalPolynomial integerPoly = integerized.getFirst();
+
+        if(polynomial.equals(new RationalPolynomial(new Rational(0)))){
+            return new ProductOfPolynomial(0L);
+        }
 
         if(polynomial.getDegree() == 0){
             // return a polynomial that's just the constant term
@@ -45,18 +54,32 @@ public class RationalFactoring extends Operation{
             return new ProductOfPolynomial(scalerTerm, integerPoly.copy());
         }
 
+
+        Rational potentialFactor;
+        RationalPolynomial factor;
+        ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm);
+        RationalPolynomial x = new RationalPolynomial(new Rational(0), new Rational(1));
+        while(integerPoly.getFirst().equals(new Rational(0))){
+            factorization.insertFactor(x);
+            integerPoly = integerPoly.divide(x);
+        }
+
         Rational constant = integerPoly.getFirst();
         Rational highestOrder = integerPoly.getLast();
 
-        Rational potentialFactor;
         DoublyLinkedList<Long> constantFactors = allFactors(Rational.toLong(constant));
         DoublyLinkedList<Long> highestOrderFactors = allFactors(Rational.toLong(highestOrder));
         DoublyLinkedListIterator<Long> constantIterator = constantFactors.getIterator();
         DoublyLinkedListIterator<Long> highestIterator = highestOrderFactors.getIterator();
-        constantIterator.goFirst();
+        try{
+            constantIterator.goFirst();
+        }catch(Exception e){
+            System.out.println(integerPoly);
+            e.printStackTrace();
+        }
 
-        RationalPolynomial factor;
-        ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm);
+
+
         Rational zero = new Rational(0,1);
         // loop through every possible factor
         while(!constantIterator.isAfter()){
@@ -106,6 +129,11 @@ public class RationalFactoring extends Operation{
         polynomial.goFirst();
         iterator.goFirst();
         Long constant = Rational.toLong(iterator.getCurrentRational());
+        constant = constant > -constant ? constant : -constant;
+        if(constant == 0){
+            // if the constant is 0 then it can be factored by x which guarantees that eisenteins criterion doesn't apply
+            return -1L;
+        }
         DoublyLinkedList<Pair<Long, Integer>> primeDivisorsOfConstant = primeFactors(constant);
         Long prime;
         primeDivisorsOfConstant.goFirst();
