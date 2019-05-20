@@ -59,12 +59,15 @@ public class RationalFactoring extends Operation{
         ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm);
         Rational zero = new Rational(0,1);
 
+        Rational temp;
+
         // loop through every possible factor
         while(!constantIterator.isAfter()){
             highestIterator.goFirst();
             while(!highestIterator.isAfter()){
                 // the potentialFactor is r/s from before
                 potentialFactor = new Rational(constantIterator.getCurrentNode().item(), highestIterator.getCurrentNode().item());
+                temp = integerPoly.solve(potentialFactor);
                 while(integerPoly.solve(potentialFactor).equals(zero)){
                     // then the new factor is (x - potentialFactor) by the factor theorem
                     factor = new RationalPolynomial(zero.subtract(potentialFactor), new Rational(1,1));
@@ -96,7 +99,7 @@ public class RationalFactoring extends Operation{
             if(iterator.getCurrentRational().getDenom() != 1){
                 throw new IllegalStateException("Cannot apply eisenstien's criterion with non-integer coefficients");
             }
-            iterator.goFirst();
+            iterator.goForth();
         }
 
         polynomial.goFirst();
@@ -184,9 +187,11 @@ public class RationalFactoring extends Operation{
 
     private static DoublyLinkedList<Long> allFactors(long integer){
         DoublyLinkedList<Long> factorList = new DoublyLinkedList<>();
+        integer = integer > -integer ? integer : -integer;
         for (long i = 1; i <= integer; i++) {
             if(integer % i == 0){
                 factorList.insert(i);
+                factorList.insert(-i);
             }
         }
         return factorList;

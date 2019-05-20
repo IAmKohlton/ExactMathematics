@@ -275,13 +275,15 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
         //( b )     b^k
         // if k is positive. If k is negative then flip the signs
 
+        int sign = this.getSign() ? -1 : 1;
+
         if(k == 0){
             return new Rational(0);
         }else if (k > 0){
-            return new Rational(pow(numer, k), pow(denom, k));
+            return new Rational(pow(numer * sign, k), pow(denom, k));
         }else{
             int j = k > -k ? k : -k;
-            return new Rational(pow(denom, j), pow(numer, j));
+            return new Rational(pow(denom * sign, j), pow(numer, j));
         }
     }
 

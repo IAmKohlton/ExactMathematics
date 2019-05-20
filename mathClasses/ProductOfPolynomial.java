@@ -9,6 +9,7 @@ public class ProductOfPolynomial implements RationalOperationOutput {
     Long constant;
 
     public ProductOfPolynomial(Long constant, RationalPolynomial ... polys){
+        this.constant = constant;
         listOfPolys = new DoublyLinkedList<>();
         for(RationalPolynomial x : polys){
             listOfPolys.insert(x);
@@ -17,11 +18,13 @@ public class ProductOfPolynomial implements RationalOperationOutput {
 
     public RationalPolynomial multiplyTogether(){
         DoublyLinkedListIterator<RationalPolynomial> iterator = listOfPolys.getIterator();
+        iterator.goFirst();
         RationalPolynomial product = new RationalPolynomial(new Rational(1,1));
-        while(!listOfPolys.isAfter()){
-            product = product.multiply(listOfPolys.item().item());
-            listOfPolys.goForth();
+        while(!iterator.isAfter()){
+            product = product.multiply(iterator.item());
+            iterator.goForth();
         }
+        product.scale(new Rational(constant, 1));
         return product;
     }
 
@@ -31,17 +34,12 @@ public class ProductOfPolynomial implements RationalOperationOutput {
         }else if(other.getSize() != this.getSize()){
             return false;
         }else{
-            this.goFirst();
-            other.goFirst();
-            while(!this.isAfter()){
-                if(!(this.getFactor().equals(other.getFactor()))){
-                    return false;
-                }
-                this.goForth();
-                other.goForth();
-            }
+            // TODO more efficient check where we compare the factors against eachother
+            // for now we'll just multiply each together
+            RationalPolynomial first = this.multiplyTogether();
+            RationalPolynomial second = other.multiplyTogether();
+            return first.equals(second);
         }
-        return true;
     }
 
     public int getSize(){
@@ -82,6 +80,16 @@ public class ProductOfPolynomial implements RationalOperationOutput {
 
     public RationalPolynomial getFactor(){
         return listOfPolys.item().item();
+    }
+
+    public String toString(){
+        String outputString = constant.toString() + "\n";
+        this.goFirst();
+        while(!this.isAfter()){
+            outputString += getFactor().toString() + "\n";
+            this.goForth();
+        }
+        return outputString;
     }
 
 }

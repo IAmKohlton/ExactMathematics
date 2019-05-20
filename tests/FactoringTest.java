@@ -53,15 +53,38 @@ public class FactoringTest {
         ProductOfPolynomial irreducibleProduct1 = irreducible1.getOutput();
         ProductOfPolynomial irreducibleProductExpected1 = new ProductOfPolynomial(1L, positiveTest);
         if (!(irreducibleProductExpected1.equals(irreducibleProduct1))){
-            System.out.println("Didn't properly factorize an irreducible polynomial");
+            System.out.println("Didn't properly factorize an irreducible polynomial 1");
         }
 
         RationalFactoring irreducible2 = new RationalFactoring(positiveTest2);
+        RationalPolynomial checkForChange = positiveTest2.copy();
         irreducible2.compute();
         ProductOfPolynomial irreducibleProduct2 = irreducible2.getOutput();
-        ProductOfPolynomial irreducibleProductExpected2 = new ProductOfPolynomial(1L, positiveTest);
+        ProductOfPolynomial irreducibleProductExpected2 = new ProductOfPolynomial(1L, positiveTest2);
         if(!(irreducibleProductExpected2.equals(irreducibleProduct2))){
-            System.out.println("Didn't properly factorize an irreducible polynomial");
+            System.out.println("Didn't properly factorize an irreducible polynomial 2");
+        }
+
+        if(!(checkForChange.equals(positiveTest2)))
+            System.out.println("Factoring a polynomial changed the original polynomial");
+
+
+        // check if (x+1)*(x-1) factors correctly
+        RationalPolynomial reducible1 = new RationalPolynomial(R(1,1), R(0,1), R(-1,1));
+        RationalPolynomial reducible1factor1 = new RationalPolynomial(R(1,1), R(1,1));
+        RationalPolynomial reducible1factor2 = new RationalPolynomial(R(-1,1), R(1,1));
+        ProductOfPolynomial reducibleFactorization1Expected = new ProductOfPolynomial(1L, reducible1factor1, reducible1factor2);
+        RationalFactoring reducibleFactorization1 = new RationalFactoring(reducible1);
+        reducibleFactorization1.compute();
+        ProductOfPolynomial reducibleFactorization1Actual = reducibleFactorization1.getOutput();
+        if(!(reducibleFactorization1Actual.equals(reducibleFactorization1Expected))){
+            System.out.println("Didn't factor a reducible polynomial correctly");
+            System.out.println(reducibleFactorization1Actual);
+            System.out.println(reducibleFactorization1Expected);
+        }
+
+        if(!quietEnding){
+            System.out.println("Factoring test complete");
         }
     }
 }
