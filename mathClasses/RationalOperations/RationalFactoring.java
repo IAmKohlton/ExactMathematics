@@ -58,16 +58,12 @@ public class RationalFactoring extends Operation{
         RationalPolynomial factor;
         ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm);
         Rational zero = new Rational(0,1);
-
-        Rational temp;
-
         // loop through every possible factor
         while(!constantIterator.isAfter()){
             highestIterator.goFirst();
             while(!highestIterator.isAfter()){
                 // the potentialFactor is r/s from before
                 potentialFactor = new Rational(constantIterator.getCurrentNode().item(), highestIterator.getCurrentNode().item());
-                temp = integerPoly.solve(potentialFactor);
                 while(integerPoly.solve(potentialFactor).equals(zero)){
                     // then the new factor is (x - potentialFactor) by the factor theorem
                     factor = new RationalPolynomial(zero.subtract(potentialFactor), new Rational(1,1));
@@ -78,6 +74,11 @@ public class RationalFactoring extends Operation{
                 highestIterator.goForth();
             }
             constantIterator.goForth();
+        }
+        if(integerPoly.getDegree() == 0){
+            factorization.setConstant(Rational.toLong(integerPoly.getFirst()));
+        }else{
+            factorization.insertFactor(integerPoly);
         }
         return factorization;
     }

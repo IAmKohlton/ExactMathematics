@@ -83,6 +83,42 @@ public class FactoringTest {
             System.out.println(reducibleFactorization1Expected);
         }
 
+        ProductOfPolynomial expectedResult;
+        RationalPolynomial resultOfMultiplication;
+        RationalPolynomial term1;
+        RationalPolynomial term2;
+        ProductOfPolynomial result;
+        RationalFactoring resultObject;
+
+        for (int i = -5; i < 5; i++) {
+            for (int j = -5; j < 5; j++) {
+                for (int k = -5; k < 5; k++) {
+                    for (int l = -5; l < 5; l++) {
+                        term1 = new RationalPolynomial(R(i,1), R(j,1));
+                        term1.unPadPoly();
+                        term2 = new RationalPolynomial(R(k,1), R(l,1));
+                        term2.unPadPoly();
+                        resultOfMultiplication = term1.multiply(term2);
+                        resultObject = new RationalFactoring(resultOfMultiplication);
+                        resultObject.compute();
+                        result = resultObject.getOutput();
+                        expectedResult = new ProductOfPolynomial(1L, term1, term2);
+                        if(!(result.equals(expectedResult))){
+                            System.out.println(term1);
+                            System.out.println("*" );
+                            System.out.println(term2);
+                            System.out.println("!=");
+                            System.out.println(expectedResult);
+                            System.out.println("instead");
+                            System.out.println(result);
+                            System.out.println();
+
+                        }
+                    }
+                }
+            }
+        }
+
         if(!quietEnding){
             System.out.println("Factoring test complete");
         }

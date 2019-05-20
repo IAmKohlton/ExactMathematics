@@ -24,22 +24,16 @@ public class ProductOfPolynomial implements RationalOperationOutput {
             product = product.multiply(iterator.item());
             iterator.goForth();
         }
-        product.scale(new Rational(constant, 1));
+        product = product.scale(new Rational(constant, 1));
         return product;
     }
 
     public boolean equals(ProductOfPolynomial other){
-        if(!(other.getConstant().equals(constant))){
-            return false;
-        }else if(other.getSize() != this.getSize()){
-            return false;
-        }else{
-            // TODO more efficient check where we compare the factors against eachother
-            // for now we'll just multiply each together
-            RationalPolynomial first = this.multiplyTogether();
-            RationalPolynomial second = other.multiplyTogether();
-            return first.equals(second);
-        }
+        // TODO more efficient check where we compare the factors against eachother
+        // for now we'll just multiply each together
+        RationalPolynomial first = this.multiplyTogether();
+        RationalPolynomial second = other.multiplyTogether();
+        return first.equals(second);
     }
 
     public int getSize(){
