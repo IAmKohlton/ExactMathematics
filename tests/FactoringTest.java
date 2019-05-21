@@ -1,6 +1,7 @@
 package tests;
 
 import mathClasses.ProductOfPolynomial;
+import mathClasses.Rational;
 import mathClasses.RationalOperations.RationalFactoring;
 import mathClasses.RationalPolynomial;
 
@@ -51,7 +52,7 @@ public class FactoringTest {
         RationalFactoring irreducible1 = new RationalFactoring(positiveTest);
         irreducible1.compute();
         ProductOfPolynomial irreducibleProduct1 = irreducible1.getOutput();
-        ProductOfPolynomial irreducibleProductExpected1 = new ProductOfPolynomial(1L, positiveTest);
+        ProductOfPolynomial irreducibleProductExpected1 = new ProductOfPolynomial(new Rational(1), positiveTest);
         if (!(irreducibleProductExpected1.equals(irreducibleProduct1))){
             System.out.println("Didn't properly factorize an irreducible polynomial 1");
         }
@@ -60,7 +61,7 @@ public class FactoringTest {
         RationalPolynomial checkForChange = positiveTest2.copy();
         irreducible2.compute();
         ProductOfPolynomial irreducibleProduct2 = irreducible2.getOutput();
-        ProductOfPolynomial irreducibleProductExpected2 = new ProductOfPolynomial(1L, positiveTest2);
+        ProductOfPolynomial irreducibleProductExpected2 = new ProductOfPolynomial(new Rational(1), positiveTest2);
         if(!(irreducibleProductExpected2.equals(irreducibleProduct2))){
             System.out.println("Didn't properly factorize an irreducible polynomial 2");
         }
@@ -73,12 +74,38 @@ public class FactoringTest {
         RationalPolynomial reducible1 = new RationalPolynomial(R(-1,1), R(0,1), R(1,1));
         RationalPolynomial reducible1factor1 = new RationalPolynomial(R(1,1), R(1,1));
         RationalPolynomial reducible1factor2 = new RationalPolynomial(R(-1,1), R(1,1));
-        ProductOfPolynomial reducibleFactorization1Expected = new ProductOfPolynomial(1L, reducible1factor1, reducible1factor2);
+        ProductOfPolynomial reducibleFactorization1Expected = new ProductOfPolynomial(new Rational(1), reducible1factor1, reducible1factor2);
         RationalFactoring reducibleFactorization1 = new RationalFactoring(reducible1);
         reducibleFactorization1.compute();
         ProductOfPolynomial reducibleFactorization1Actual = reducibleFactorization1.getOutput();
         if(!(reducibleFactorization1Actual.equals(reducibleFactorization1Expected))){
             System.out.println("Didn't factor a reducible polynomial correctly");
+            System.out.println(reducibleFactorization1Actual);
+            System.out.println(reducibleFactorization1Expected);
+        }
+
+        reducible1 = new RationalPolynomial(R(5,4), R(113,28), R(59, 28), R(2,7));
+        reducible1factor1 = new RationalPolynomial(R(5,4), R(2,7));
+        reducible1factor2 = new RationalPolynomial(R(1,1), R(3,1), R(1,1));
+        reducibleFactorization1Expected = new ProductOfPolynomial(new Rational(1), reducible1factor1, reducible1factor2);
+        reducibleFactorization1 = new RationalFactoring(reducible1);
+        reducibleFactorization1.compute();
+        reducibleFactorization1Actual = reducibleFactorization1.getOutput();
+        if(!(reducibleFactorization1Actual.equals(reducibleFactorization1Expected))){
+            System.out.println("Didn't factor an irreducible order two poly times an order one poly");
+            System.out.println(reducibleFactorization1Actual);
+            System.out.println(reducibleFactorization1Expected);
+        }
+
+        reducible1 = new RationalPolynomial(R(3,2), R(6,2), R(3,2));
+        reducible1factor1 = new RationalPolynomial(R(1,1), R(2,1), R(1,1));
+        reducible1factor2 = new RationalPolynomial(R(3,2));
+        reducibleFactorization1Expected = new ProductOfPolynomial(new Rational(1), reducible1factor1, reducible1factor2);
+        reducibleFactorization1 = new RationalFactoring(reducible1);
+        reducibleFactorization1.compute();
+        reducibleFactorization1Actual = reducibleFactorization1.getOutput();
+        if(!(reducibleFactorization1Actual.equals(reducibleFactorization1Expected))){
+            System.out.println("Didn't factor an irreducible order two poly times an order one poly");
             System.out.println(reducibleFactorization1Actual);
             System.out.println(reducibleFactorization1Expected);
         }
@@ -94,7 +121,6 @@ public class FactoringTest {
             for (int j = -5; j < 5; j++) {
                 for (int k = -5; k < 5; k++) {
                     for (int l = -5; l < 5; l++) {
-
                         term1 = new RationalPolynomial(R(i,1), R(j,1));
                         term1.unPadPoly();
                         term2 = new RationalPolynomial(R(k,1), R(l,1));
@@ -104,7 +130,7 @@ public class FactoringTest {
 
                         resultObject.compute();
                         result = resultObject.getOutput();
-                        expectedResult = new ProductOfPolynomial(1L, term1, term2);
+                        expectedResult = new ProductOfPolynomial(new Rational(1), term1, term2);
                         if(!(result.equals(expectedResult))){
                             System.out.println(term1);
                             System.out.println("*" );

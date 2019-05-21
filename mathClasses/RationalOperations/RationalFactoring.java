@@ -37,16 +37,16 @@ public class RationalFactoring extends Operation{
 
         // integerize the polynomial
         Pair<RationalPolynomial, Long> integerized = polynomial.integerize();
-        Long scalerTerm = integerized.getSecond();
+        Rational scalerTerm = new Rational(integerized.getSecond(),1);
         RationalPolynomial integerPoly = integerized.getFirst();
 
         if(polynomial.equals(new RationalPolynomial(new Rational(0)))){
-            return new ProductOfPolynomial(0L);
+            return new ProductOfPolynomial(new Rational(0));
         }
 
         if(polynomial.getDegree() == 0){
             // return a polynomial that's just the constant term
-            return new ProductOfPolynomial(Rational.toLong(integerPoly.getFirst()));
+            return new ProductOfPolynomial(integerPoly.getFirst());
         }
 
         if(eisenstein(integerPoly) != -1L){
@@ -54,10 +54,9 @@ public class RationalFactoring extends Operation{
             return new ProductOfPolynomial(scalerTerm, integerPoly.copy());
         }
 
-
         Rational potentialFactor;
         RationalPolynomial factor;
-        ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm);
+        ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm.getInverse());
         RationalPolynomial x = new RationalPolynomial(new Rational(0), new Rational(1));
         while(integerPoly.getFirst().equals(new Rational(0))){
             factorization.insertFactor(x);
@@ -99,7 +98,8 @@ public class RationalFactoring extends Operation{
             constantIterator.goForth();
         }
         if(integerPoly.getDegree() == 0){
-            factorization.setConstant(Rational.toLong(integerPoly.getFirst()));
+            Rational prevConstant = factorization.getConstant();
+            factorization.setConstant(prevConstant.multiply(integerPoly.getFirst()));
         }else{
             factorization.insertFactor(integerPoly);
         }

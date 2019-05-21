@@ -6,9 +6,9 @@ import mathClasses.RationalOperations.RationalOperationOutput;
 
 public class ProductOfPolynomial implements RationalOperationOutput {
     protected DoublyLinkedList<RationalPolynomial> listOfPolys;
-    Long constant;
+    Rational constant;
 
-    public ProductOfPolynomial(Long constant, RationalPolynomial ... polys){
+    public ProductOfPolynomial(Rational constant, RationalPolynomial ... polys){
         this.constant = constant;
         listOfPolys = new DoublyLinkedList<>();
         for(RationalPolynomial x : polys){
@@ -18,13 +18,16 @@ public class ProductOfPolynomial implements RationalOperationOutput {
 
     public RationalPolynomial multiplyTogether(){
         DoublyLinkedListIterator<RationalPolynomial> iterator = listOfPolys.getIterator();
+        if(listOfPolys.getSize() == 0){
+            return new RationalPolynomial(constant);
+        }
         iterator.goFirst();
         RationalPolynomial product = new RationalPolynomial(new Rational(1,1));
         while(!iterator.isAfter()){
             product = product.multiply(iterator.item());
             iterator.goForth();
         }
-        product = product.scale(new Rational(constant, 1));
+        product = product.scale(constant);
         return product;
     }
 
@@ -33,6 +36,7 @@ public class ProductOfPolynomial implements RationalOperationOutput {
         // for now we'll just multiply each together
         RationalPolynomial first = this.multiplyTogether();
         RationalPolynomial second = other.multiplyTogether();
+
         return first.equals(second);
     }
 
@@ -40,11 +44,11 @@ public class ProductOfPolynomial implements RationalOperationOutput {
         return listOfPolys.getSize();
     }
 
-    public Long getConstant() {
+    public Rational getConstant() {
         return constant;
     }
 
-    public void setConstant(Long constant) {
+    public void setConstant(Rational constant) {
         this.constant = constant;
     }
 
