@@ -4,10 +4,25 @@ import dataStructures.DoublyLinkedList;
 import dataStructures.DoublyLinkedListIterator;
 import mathClasses.RationalOperations.RationalOperationOutput;
 
+/**
+ * product of many distinct RationalPolynomials
+ */
 public class ProductOfPolynomial implements RationalOperationOutput {
+    /**
+     * Collections of all polynomials in the full producty
+     */
     protected DoublyLinkedList<RationalPolynomial> listOfPolys;
+
+    /**
+     * Constant by which this polynomial is scaled by
+     */
     Rational constant;
 
+    /**
+     * Constructs a new ProductOfPolynomials based on a constant, and a chain of polynomials
+     * @param constant Rational scaler
+     * @param polys sequence of polynomials
+     */
     public ProductOfPolynomial(Rational constant, RationalPolynomial ... polys){
         this.constant = constant;
         listOfPolys = new DoublyLinkedList<>();
@@ -16,24 +31,29 @@ public class ProductOfPolynomial implements RationalOperationOutput {
         }
     }
 
+    /**
+     * multiply all the polynomials in this product together
+     * @return RationalPolynomial representing the product of all terms
+     */
     public RationalPolynomial multiplyTogether(){
         DoublyLinkedListIterator<RationalPolynomial> iterator = listOfPolys.getIterator();
         if(listOfPolys.getSize() == 0){
             return new RationalPolynomial(constant);
         }
+
+        // iterate through all polynomials and multiply them all into the final product
         iterator.goFirst();
-        RationalPolynomial product = new RationalPolynomial(new Rational(1,1));
+        RationalPolynomial product = new RationalPolynomial(constant);
         while(!iterator.isAfter()){
             product = product.multiply(iterator.item());
             iterator.goForth();
         }
-        product = product.scale(constant);
         return product;
     }
 
     public boolean equals(ProductOfPolynomial other){
         // TODO more efficient check where we compare the factors against eachother
-        // for now we'll just multiply each together
+        // for now we'll just multiply each together and check if they're equal
         RationalPolynomial first = this.multiplyTogether();
         RationalPolynomial second = other.multiplyTogether();
 

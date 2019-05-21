@@ -1,8 +1,10 @@
 package mathClasses;
 
-import dataStructures.DoublyLinkedList;
 import dataStructures.DoublyLinkedNode;
 
+/**
+ * Class that iterates over a RationalPolynomial
+ */
 public class RationalPolyIterator extends RationalPolynomial{
     protected DoublyLinkedNode<Rational> currentNode;
 

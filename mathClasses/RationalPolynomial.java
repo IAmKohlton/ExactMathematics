@@ -384,6 +384,10 @@ public class RationalPolynomial implements RationalOperationOutput {
         return solve(new Rational(xVal));
     }
 
+    /**
+     * converts a polynomial with rational coefficients to a polynomial with integer coefficients by multiplying by the lowest common multiple of all denominators
+     * @return RationalPolynomial with integer coefficients
+     */
     public Pair<RationalPolynomial, Long> integerize(){
         if(this.isNull())
             throw new IllegalStateException("Can't integerize an empty polynomial");
@@ -531,7 +535,6 @@ public class RationalPolynomial implements RationalOperationOutput {
 
         return this.poly.getSize() - 1;
     }
-
 
     /**
      * creates a deep clone of the current polynomial
@@ -720,6 +723,10 @@ public class RationalPolynomial implements RationalOperationOutput {
         return outString;
     }
 
+    /**
+     * constructs an iterator for the current polynomial
+     * @return iterator for this polynomial
+     */
     public RationalPolyIterator getIterator(){
         return new RationalPolyIterator(this);
     }

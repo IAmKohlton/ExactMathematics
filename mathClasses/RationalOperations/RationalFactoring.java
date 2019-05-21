@@ -10,50 +10,72 @@ import mathClasses.RationalPolynomial;
 
 import static mathClasses.Rational.R;
 
+/**
+ * Factors a polynomial
+ */
 public class RationalFactoring extends Operation{
 
+    /**
+     * constructs the operation
+     * @param poly input RationalPolynomial
+     */
     public RationalFactoring(RationalPolynomial poly){
         super(poly);
         // not sure if I should have that in the constructor, or whether that should be something explicitly done by the programmer
         // compute();
     }
 
+    /**
+     * factors the polynomial and stores the result in 'output'
+     */
     public void compute(){
-        output = factor(firstPoly);
+        output = factor();
     }
 
+    /**
+     * returns the output of the operation
+     * @return ProductOfPolynomial output
+     */
     public ProductOfPolynomial getOutput(){
         return (ProductOfPolynomial) output;
     }
 
-    private static ProductOfPolynomial factor(RationalPolynomial polynomial){
+    /**
+     * Factors the first input polynomial based on the Rational Roots Test which
+     * @return ProductOfPolynomials representing the factorization
+     */
+    private ProductOfPolynomial factor(){
         // this uses the rational roots test saying that every possible factor must be of the form r/s
         // where r divides the constant term and s divides the highest order term
+        // this gives is a finite number of possible roots to test
 
-        if(polynomial.isNull()) {
-            System.out.println(polynomial);
+        if(firstPoly.isNull()) {
             throw new IllegalStateException("Cannot factor an empty polynomial");
         }
 
         // integerize the polynomial
-        Pair<RationalPolynomial, Long> integerized = polynomial.integerize();
+        Pair<RationalPolynomial, Long> integerized = firstPoly.integerize();
         Rational scalerTerm = new Rational(integerized.getSecond(),1);
         RationalPolynomial integerPoly = integerized.getFirst();
 
-        if(polynomial.equals(new RationalPolynomial(new Rational(0)))){
+        // if it's equal to zero return the zero Product
+        if(firstPoly.equals(new RationalPolynomial(new Rational(0)))){
             return new ProductOfPolynomial(new Rational(0));
         }
 
-        if(polynomial.getDegree() == 0){
+        // if it's of degree zero return a constant
+        if(firstPoly.getDegree() == 0){
             // return a polynomial that's just the constant term
             return new ProductOfPolynomial(integerPoly.getFirst());
         }
 
+        // if it satisfies eisenstein's criterion then it's irreducible
         if(eisenstein(integerPoly) != -1L){
             // if it's irreducible by eisenstiens criterion
             return new ProductOfPolynomial(scalerTerm, integerPoly.copy());
         }
 
+        // first we get rid of any factors of x
         Rational potentialFactor;
         RationalPolynomial factor;
         ProductOfPolynomial factorization = new ProductOfPolynomial(scalerTerm.getInverse());
@@ -63,19 +85,15 @@ public class RationalFactoring extends Operation{
             integerPoly = integerPoly.divide(x);
         }
 
+        // get all numbers that divide the constant term and the highest order terms
         Rational constant = integerPoly.getFirst();
         Rational highestOrder = integerPoly.getLast();
 
-        DoublyLinkedList<Long> constantFactors = allFactors(Rational.toLong(constant));
-        DoublyLinkedList<Long> highestOrderFactors = allFactors(Rational.toLong(highestOrder));
+        DoublyLinkedList<Long> constantFactors = allDivisors(Rational.toLong(constant));
+        DoublyLinkedList<Long> highestOrderFactors = allDivisors(Rational.toLong(highestOrder));
         DoublyLinkedListIterator<Long> constantIterator = constantFactors.getIterator();
         DoublyLinkedListIterator<Long> highestIterator = highestOrderFactors.getIterator();
-        try{
-            constantIterator.goFirst();
-        }catch(Exception e){
-            System.out.println(integerPoly);
-            e.printStackTrace();
-        }
+        constantIterator.goFirst();
 
 
 
@@ -86,8 +104,9 @@ public class RationalFactoring extends Operation{
             while(!highestIterator.isAfter()){
                 // the potentialFactor is r/s from before
                 potentialFactor = new Rational(constantIterator.getCurrentNode().item(), highestIterator.getCurrentNode().item());
+                // only enters loop if f(constant) = zero
+                // by the factor theorem this tells us (x - potentialFactor) is a factor
                 while(integerPoly.solve(potentialFactor).equals(zero)){
-                    // then the new factor is (x - potentialFactor) by the factor theorem
                     factor = new RationalPolynomial(zero.subtract(potentialFactor), new Rational(1,1));
                     factorization.insertFactor(factor);
                     integerPoly = integerPoly.divide(factor);
@@ -97,6 +116,8 @@ public class RationalFactoring extends Operation{
             }
             constantIterator.goForth();
         }
+
+        // cleanup. could technically get rid of this if I refactored the above code
         if(integerPoly.getDegree() == 0){
             Rational prevConstant = factorization.getConstant();
             factorization.setConstant(prevConstant.multiply(integerPoly.getFirst()));
@@ -113,11 +134,20 @@ public class RationalFactoring extends Operation{
      * @return -1 if the polynomial doesn't satisfy the criterion. Otherwise it gives the lowest prime number for which the criterion is satisfied
      */
     public static long eisenstein(RationalPolynomial polynomial){
+        // eisenstein's criterion says that a polynomial is irreducible if a prime number p exists that satisfy the following:
+        // p divides every term except the highest order term
+        // p does not divide the highest order term
+        // p^2 does not divide the constant factor
+        // through this theorem we have a relatively quick way of telling if something is irreducible
+        // the only drawback is that the converse of the statement isn't true
+        // that means that if a polynomial is irreducible it doesn't necessarily satisfy eisenstein's criterion
+
         if(polynomial.isNull())
             throw new IllegalStateException("Cannot factor a null polynomial");
 
         RationalPolyIterator iterator = polynomial.getIterator();
 
+        // check that the eisenstein's criterion can even be applied
         iterator.goFirst();
         while(!iterator.isAfter()){
             if(iterator.getCurrentRational().getDenom() != 1){
@@ -128,7 +158,7 @@ public class RationalFactoring extends Operation{
 
         polynomial.goFirst();
         iterator.goFirst();
-        Long constant = Rational.toLong(iterator.getCurrentRational());
+        long constant = Rational.toLong(iterator.getCurrentRational());
         constant = constant > -constant ? constant : -constant;
         if(constant == 0){
             // if the constant is 0 then it can be factored by x which guarantees that eisenteins criterion doesn't apply
@@ -162,7 +192,7 @@ public class RationalFactoring extends Operation{
             continueLoop = false;
             while(!iterator.isLast()){
                 if(Rational.toLong(iterator.getCurrentRational()) % prime != 0){
-                    continueLoop = true;
+                    continueLoop = true; // need to do this since we have no other way to 'break' this loop and subsequently 'continue' the above loop
                     break;
                 }
                 iterator.goForth();
@@ -176,7 +206,11 @@ public class RationalFactoring extends Operation{
         return -1;
     }
 
-
+    /**
+     * finds all the prime numbers of a given integer
+     * @param integer int we are factoring
+     * @return DoublyLinkedList<Pair<Long,Integer>> where each element of the list gives the prime, and the exponent that it's raised to
+     */
     private static DoublyLinkedList<Pair<Long,Integer>> primeFactors(long integer){
         if(integer < 1)
             throw new ArithmeticException("Cannot factorize number less than zero");
@@ -214,9 +248,15 @@ public class RationalFactoring extends Operation{
         return factors;
     }
 
-    private static DoublyLinkedList<Long> allFactors(long integer){
+    /**
+     * get all divisors of a given number
+     * @param integer int we find divisors of
+     * @return DoublyLinkedList of divisors
+     */
+    private static DoublyLinkedList<Long> allDivisors(long integer){
         DoublyLinkedList<Long> factorList = new DoublyLinkedList<>();
         integer = integer > -integer ? integer : -integer;
+        // loop through all integers between 1 and 'integer' and see if each of them divides 'integer' evenly
         for (long i = 1; i <= integer; i++) {
             if(integer % i == 0){
                 factorList.insert(i);
