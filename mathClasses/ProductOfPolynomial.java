@@ -11,12 +11,12 @@ public class ProductOfPolynomial implements RationalOperationOutput {
     /**
      * Collections of all polynomials in the full producty
      */
-    protected DoublyLinkedList<RationalPolynomial> listOfPolys;
+    private DoublyLinkedList<RationalPolynomial> listOfPolys;
 
     /**
      * Constant by which this polynomial is scaled by
      */
-    Rational constant;
+    private Rational constant;
 
     /**
      * Constructs a new ProductOfPolynomials based on a constant, and a chain of polynomials

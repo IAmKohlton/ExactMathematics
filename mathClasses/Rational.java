@@ -151,15 +151,6 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
     }
 
     /**
-     * get the additive inverse of this
-     * @return additive inverse of this
-     */
-    public Rational getNegatation(){
-        int oppSign = this.getSign() ? 1 : -1;
-        return new Rational(oppSign * this.getNumer(), this.getDenom());
-    }
-
-    /**
      * gets the greatest common denominator of two numbers (up to +-1)
      * @param num1 the first integer
      * @param num2 the second integer

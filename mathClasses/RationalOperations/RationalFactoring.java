@@ -8,8 +8,6 @@ import mathClasses.Rational;
 import mathClasses.RationalPolyIterator;
 import mathClasses.RationalPolynomial;
 
-import static mathClasses.Rational.R;
-
 /**
  * Factors a polynomial
  */
