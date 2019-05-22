@@ -10,6 +10,7 @@ import mathClasses.RationalPolynomial;
 
 /**
  * Factors a polynomial
+ * Only words if there is only one factor in the polynomial that is greater than degree 1 :(
  */
 public class RationalFactoring extends Operation{
 

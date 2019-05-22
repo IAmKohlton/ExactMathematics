@@ -24,6 +24,10 @@ public class GreatestCommonDivisor extends Operation {
         }else{
             gcd = euclidRecursive(secondPoly, firstPoly);
         }
+        // at this point it's true that the poly in 'gcd' divides both, but it is not unique
+        // to make it unique we scale the poly so that it is monic, and positive
+        Rational highestOrderCoeff = gcd.getLast();
+        gcd = gcd.scale(highestOrderCoeff.getInverse());
         return gcd;
     }
 
@@ -31,7 +35,7 @@ public class GreatestCommonDivisor extends Operation {
         if(lessDegree.equals(new RationalPolynomial(new Rational(0,1)))){
             return greaterDegree;
         }else{
-            return euclidRecursive(greaterDegree, greaterDegree.remainder(lessDegree));
+            return euclidRecursive(greaterDegree.remainder(lessDegree), lessDegree);
         }
     }
 }
