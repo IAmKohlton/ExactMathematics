@@ -226,7 +226,7 @@ public class RationalPolynomial implements RationalOperationOutput {
                 otherCurrent = otherIterator.item();
 
                 // thisCurr * otherCurr is of degree i+j so we must increment the i+jth term by thisCurr * otherCurr
-                productArray[i+j].increment(thisCurrent.multiply(otherCurrent));
+                productArray[i+j] = productArray[i+j].add(thisCurrent.multiply(otherCurrent));
 
                 otherIterator.goForth();
                 j++;
@@ -367,10 +367,10 @@ public class RationalPolynomial implements RationalOperationOutput {
             for (int i = 0; i <= this.getDegree(); i++) {
                 coeff = iterator.item();
                 if(i == 0){
-                    runningTotal.increment(coeff);
+                    runningTotal = runningTotal.add(coeff);
                 }else{
                     term = xVal.power(i);
-                    runningTotal.increment(coeff.multiply(term));
+                    runningTotal = runningTotal.add(coeff.multiply(term));
                 }
                 iterator.goForth();
             }

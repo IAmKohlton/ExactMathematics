@@ -3,7 +3,7 @@ package mathClasses;
 import mathClasses.RationalOperations.RationalOperationOutput;
 
 /**
- * Rational representation of numbers that includes infinity.
+ * Rational representation of numbers that includes infinity. Instances of Rational are immutable
  */
 public class Rational implements Comparable<Rational>, RationalOperationOutput, Cloneable {
     /**
@@ -271,10 +271,10 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
         if(k == 0){
             return new Rational(0);
         }else if (k > 0){
-            return new Rational(pow(numer * sign, k), pow(denom, k));
+            return new Rational(pow(this.getNumer() * sign, k), pow(this.getDenom(), k));
         }else{
             int j = k > -k ? k : -k;
-            return new Rational(pow(denom * sign, j), pow(numer, j));
+            return new Rational(pow(this.getDenom() * sign, j), pow(this.getNumer(), j));
         }
     }
 
@@ -392,79 +392,81 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
         return new Rational(newNum, newDen);
     }
 
-    public void increment(Rational other){
-        // if both are infinite
-        if(this.isInfinity() && other.isInfinity()){
-            // if trying: inf - inf or -inf + inf throw exception
-            if(this.getSign() != other.getSign()){
-                throw new ArithmeticException("Cannot add positive and negative infinity");
-            }else if(this.getSign()){ // if trying -inf + -inf
-                // return makeNegativeInfinity();
-                this.numer = 0;
-                this.denom = 1;
-                this.sign = true;
-                this.infinity = true;
-            }else{ // if trying inf + inf
-                // return makePositiveInfinity();
-                this.numer = 0;
-                this.denom = 1;
-                this.sign = false;
-                this.infinity = true;
 
-            }
-        }else if(this.isInfinity()){ // if just this is infinite
-            // return infinity of the same sign as this
-            if(this.getSign()){
-                // return makeNegativeInfinity();
-                this.numer = 0;
-                this.denom = 1;
-                this.sign = true;
-                this.infinity = true;
-            }else{
-                // return makePositiveInfinity();
-                this.numer = 0;
-                this.denom = 1;
-                this.sign = false;
-                this.infinity = true;
-            }
-        }else if(other.isInfinity()){ // if other is infinite
-            // return infinity of the same sign as other
-            if(other.getSign()){
-                // return makeNegativeInfinity();
-                this.numer = 0;
-                this.denom = 1;
-                this.sign = true;
-                this.infinity = true;
-            }else{
-                // return makePositiveInfinity();
-                this.numer = 0;
-                this.denom = 1;
-                this.sign = false;
-                this.infinity = true;
-            }
-        }else{
-
-            // case for finite numbers
-
-            // a   c   a * d + c * b
-            // - + - = -------------
-            // b   d       b * d
-
-            int thisSign = this.getSign() ? -1 : 1;
-            int otherSign = other.getSign() ? -1 : 1;
-
-            // add like above
-            long newNum = thisSign * this.getNumer() * other.getDenom() + otherSign * this.getDenom() * other.getNumer();
-            long newDen = this.getDenom() * other.getDenom();
-
-            // reduce and return
-            long newGcd = gcd(newNum, newDen);
-            this.sign = newNum <= 0; // false if greater than zero, true if less than zero
-            this.numer = newNum/newGcd;
-            this.numer = numer < 0 ? -numer : numer;
-            this.denom = newDen/newGcd;
-        }
-    }
+    // taken out of program in order to make Rational an immutable type
+//    public void increment(Rational other){
+//        // if both are infinite
+//        if(this.isInfinity() && other.isInfinity()){
+//            // if trying: inf - inf or -inf + inf throw exception
+//            if(this.getSign() != other.getSign()){
+//                throw new ArithmeticException("Cannot add positive and negative infinity");
+//            }else if(this.getSign()){ // if trying -inf + -inf
+//                // return makeNegativeInfinity();
+//                this.numer = 0;
+//                this.denom = 1;
+//                this.sign = true;
+//                this.infinity = true;
+//            }else{ // if trying inf + inf
+//                // return makePositiveInfinity();
+//                this.numer = 0;
+//                this.denom = 1;
+//                this.sign = false;
+//                this.infinity = true;
+//
+//            }
+//        }else if(this.isInfinity()){ // if just this is infinite
+//            // return infinity of the same sign as this
+//            if(this.getSign()){
+//                // return makeNegativeInfinity();
+//                this.numer = 0;
+//                this.denom = 1;
+//                this.sign = true;
+//                this.infinity = true;
+//            }else{
+//                // return makePositiveInfinity();
+//                this.numer = 0;
+//                this.denom = 1;
+//                this.sign = false;
+//                this.infinity = true;
+//            }
+//        }else if(other.isInfinity()){ // if other is infinite
+//            // return infinity of the same sign as other
+//            if(other.getSign()){
+//                // return makeNegativeInfinity();
+//                this.numer = 0;
+//                this.denom = 1;
+//                this.sign = true;
+//                this.infinity = true;
+//            }else{
+//                // return makePositiveInfinity();
+//                this.numer = 0;
+//                this.denom = 1;
+//                this.sign = false;
+//                this.infinity = true;
+//            }
+//        }else{
+//
+//            // case for finite numbers
+//
+//            // a   c   a * d + c * b
+//            // - + - = -------------
+//            // b   d       b * d
+//
+//            int thisSign = this.getSign() ? -1 : 1;
+//            int otherSign = other.getSign() ? -1 : 1;
+//
+//            // add like above
+//            long newNum = thisSign * this.getNumer() * other.getDenom() + otherSign * this.getDenom() * other.getNumer();
+//            long newDen = this.getDenom() * other.getDenom();
+//
+//            // reduce and return
+//            long newGcd = gcd(newNum, newDen);
+//            this.sign = newNum <= 0; // false if greater than zero, true if less than zero
+//            this.numer = newNum/newGcd;
+//            this.numer = numer < 0 ? -numer : numer;
+//            this.denom = newDen/newGcd;
+//        }
+//    }
 
     /**
      * subtract the current rational number by a different one

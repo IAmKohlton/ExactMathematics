@@ -197,22 +197,22 @@ public class RatTest {
             System.out.println("-inf !< 1/2");
 
         // now testing increment
-
-        Rational threeHalfs = new Rational(3, 2);
-        threeHalfs.increment(new Rational(3,4));
-        Rational nineQuarters = new Rational(9, 4);
-        if(!(threeHalfs.equals(nineQuarters)))
-            System.out.println("(3/2 += 3/4) != 9/4");
-
-        Rational ze = new Rational(0);
-        ze.increment(nineQuarters);
-        if(!(ze.equals(nineQuarters)))
-            System.out.println("(0 += 9/4 != 9/4");
-
-        Rational infi = makePositiveInfinity();
-        infi.increment(new Rational(-1000000000,3));
-        if(!(infi.equals(makePositiveInfinity())))
-            System.out.println("inf += -bigNumber != inf");
+//
+//        Rational threeHalfs = new Rational(3, 2);
+//        threeHalfs.increment(new Rational(3,4));
+//        Rational nineQuarters = new Rational(9, 4);
+//        if(!(threeHalfs.equals(nineQuarters)))
+//            System.out.println("(3/2 += 3/4) != 9/4");
+//
+//        Rational ze = new Rational(0);
+//        ze.increment(nineQuarters);
+//        if(!(ze.equals(nineQuarters)))
+//            System.out.println("(0 += 9/4 != 9/4");
+//
+//        Rational infi = makePositiveInfinity();
+//        infi.increment(new Rational(-1000000000,3));
+//        if(!(infi.equals(makePositiveInfinity())))
+//            System.out.println("inf += -bigNumber != inf");
 
         // now testing power
 
