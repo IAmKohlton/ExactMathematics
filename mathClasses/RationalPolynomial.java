@@ -494,16 +494,16 @@ public class RationalPolynomial implements RationalOperationOutput {
         poly.goBack();
     }
 
-    public Rational getFirst(){return poly.getHead().item();}
+    public Rational getFirst(){return poly.getHead().item().clone();}
 
-    public Rational getLast(){return poly.getTail().item();}
+    public Rational getLast(){return poly.getTail().item().clone();}
 
     /**
      * Get's the rational number currently pointed to by cursor in 'poly'
      * @return rational number in polynomial
      */
     public Rational currentRational(){
-        return this.poly.item().item();
+        return this.poly.item().item().clone();
     }
 
     /**

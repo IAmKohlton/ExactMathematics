@@ -615,11 +615,12 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
     }
 
     public Rational clone(){
-        Rational theClone = new Rational(0,1);
-        theClone.numer = this.numer;
-        theClone.denom = this.denom;
-        theClone.infinity = this.infinity;
-        theClone.sign = this.sign;
+        Rational theClone = null;
+        try{
+            theClone = (Rational) super.clone();
+        }catch (CloneNotSupportedException e){
+            e.printStackTrace();
+        }
         return theClone;
     }
 }

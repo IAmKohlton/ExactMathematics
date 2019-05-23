@@ -16,7 +16,7 @@ public class RationalPolyIterator extends RationalPolynomial{
     }
 
     public Rational getCurrentRational(){
-        return currentNode.item();
+        return currentNode.item().clone();
     }
 
     public boolean isFirst(){
