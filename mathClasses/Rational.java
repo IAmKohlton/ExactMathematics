@@ -221,6 +221,7 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
         // if both numbers are finite
 
         // get new sign
+        // reminder: ^ is logical xor, not exponentiation
         boolean newSign = this.getSign() ^ other.getSign();
 
         // multiply the numerator and denominators
@@ -248,14 +249,10 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
             }else if(k < 0){ // (1/inf)^k = 0
                 return new Rational(0);
             }else{
-                if(!this.getSign()){ // +inf^k = inf
-                    return makePositiveInfinity();
+                if(this.getSign() && k % 2 == 1){ // if raising a negative to the power of an odd then it's -inf otherwise it's +inf
+                    return makeNegativeInfinity();
                 }else{
-                    if(k % 2 == 0){ // -inf^k = -inf if k is odd else -inf^k = inf
-                        return makePositiveInfinity();
-                    }else{
-                        return makeNegativeInfinity();
-                    }
+                    return makePositiveInfinity();
                 }
             }
         }
@@ -346,25 +343,20 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
             // if trying: inf - inf or -inf + inf throw exception
             if(this.getSign() != other.getSign()){
                 throw new ArithmeticException("Cannot add positive and negative infinity");
-            }else if(this.getSign()){ // if trying -inf + -inf
-                return makeNegativeInfinity();
-            }else{ // if trying inf + inf
-                return makePositiveInfinity();
             }
         }
-        // if just this is infinite
+        // find if one of them are infinite
+        // this bit still works if both of them are infinite, but the previous bit didn't throw an exception
+        Rational theInfiniteOne = null;
         if(this.isInfinity()){
-            // return infinity of the same sign as this
-            if(this.getSign()){
-                return makeNegativeInfinity();
-            }else{
-                return makePositiveInfinity();
-            }
+            theInfiniteOne = this;
         }
-        // if other is infinite
         if(other.isInfinity()){
-            // return infinity of the same sign as other
-            if(other.getSign()){
+            theInfiniteOne = other;
+        }
+        // if one of them is infinite check theInfiniteOne's sign
+        if(theInfiniteOne != null){
+            if(theInfiniteOne.getSign()){
                 return makeNegativeInfinity();
             }else{
                 return makePositiveInfinity();
@@ -393,7 +385,7 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
     }
 
 
-    // taken out of program in order to make Rational an immutable type
+    // taken out of class in order to make Rational an immutable type
 //    public void increment(Rational other){
 //        // if both are infinite
 //        if(this.isInfinity() && other.isInfinity()){
@@ -474,58 +466,10 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
      * @return the difference of the two rational numbers
      */
     public Rational subtract(Rational other){
-        // if both are infinity
-        if(this.isInfinity() && other.isInfinity()){
-            // if trying -inf - -inf or inf - inf throw exception
-            if(this.getSign() == other.getSign()){
-                throw new ArithmeticException("cannot subtract infinity from infinity");
-            }else if(this.getSign()){ // if trying -inf - inf
-                return makeNegativeInfinity();
-            }else{ // inf - -inf
-                return makePositiveInfinity();
-            }
-        }
-
-        // if this is infinite
-        if(this.isInfinity()){
-            // return infinity of same type as this
-            if(this.getSign()){
-                return makeNegativeInfinity();
-            }else{
-                return makePositiveInfinity();
-            }
-        }
-
-        // if other is infinite
-        if(other.isInfinity()){
-            // return infinity of opposite type as other
-            if(this.getSign()){ // x - -inf
-                return makePositiveInfinity();
-            }else{ // x - +inf
-                return makeNegativeInfinity();
-            }
-        }
-
-        // case for finite numbers
-
-        // a   c   a * d - c * b
-        // - - - = -------------
-        // b   d       b * d
-
-
-        // subtract like above
-
-        int thisSign = this.getSign() ? -1 : 1;
-        int otherSign = other.getSign() ? -1 : 1;
-
-        long newNum = thisSign * this.getNumer() * other.getDenom() - otherSign * this.getDenom() * other.getNumer();
-        long newDen = this.getDenom() * other.getDenom();
-
-        // reduce and return
-        long newGcd = gcd(newNum, newDen);
-        newNum = newNum/newGcd;
-        newDen = newDen/newGcd;
-        return new Rational(newNum, newDen);
+        // flip sign of other then add them
+        Rational inverseOfOther = other.clone();
+        inverseOfOther.sign = !other.getSign();
+        return this.add(inverseOfOther);
     }
 
     /**
@@ -553,7 +497,7 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
             if(other.getSign()){ // if this is negative then this > other
                 return 1;
             }else{
-                return 0;
+                return -1;
             }
         }
 
@@ -599,7 +543,7 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
             }
         }
         String returnString = this.getNumer() + "/" + this.getDenom();
-        if(sign){
+        if(this.getSign()){
             return "-" + returnString;
         }else{
             return returnString;
@@ -607,6 +551,43 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
 
     }
 
+    /**
+     * convert a Rational to a float
+     * @param rat the Rational
+     * @return float representation of rat
+     */
+    public static float toFloat(Rational rat){
+        if(rat.isInfinity()){
+            if(rat.getSign()){
+                return Float.POSITIVE_INFINITY;
+            }else{
+                return Float.NEGATIVE_INFINITY;
+            }
+        }
+        return rat.getNumer() / (float)rat.getDenom();
+    }
+
+    /**
+     * convert a Rational to a float
+     * @param rat the Rational
+     * @return float representation of rat
+     */
+    public static double toDouble(Rational rat){
+        if(rat.isInfinity()){
+            if(rat.getSign()){
+                return Double.POSITIVE_INFINITY;
+            }else{
+                return Double.NEGATIVE_INFINITY;
+            }
+        }
+        return rat.getNumer() / (double)rat.getDenom();
+    }
+
+    /**
+     * converts a Rational to a Long if the Rational has denominator of 1
+     * @param rat Rational we want to convert
+     * @return Long
+     */
     public static Long toLong(Rational rat){
         if(rat.getDenom() != 1)
             throw new ArithmeticException("Conversion to an integer from a non integer rational can't be done");
@@ -616,6 +597,10 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
         return sign * rat.getNumer();
     }
 
+    /**
+     * clones the current polynomial
+     * @return cloned Rational
+     */
     public Rational clone(){
         Rational theClone = null;
         try{
