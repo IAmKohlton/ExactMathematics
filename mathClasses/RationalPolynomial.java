@@ -221,7 +221,7 @@ public class RationalPolynomial implements RationalOperationOutput {
 
         thisIterator.goFirst();
         int i = 0; // keep track of i, and j to find the degree of the intermediate product terms
-        int j = 0;
+        int j;
         Rational thisCurrent;
         Rational otherCurrent;
         // loop through all elements of 'this'
@@ -353,9 +353,7 @@ public class RationalPolynomial implements RationalOperationOutput {
             Rational lastTerm = this.poly.getTail().item();
 
             // raise infinity to the kth power and then look at it's sign
-            long infCoeff = xVal.getSign() ? -1 : 1;
-
-            infCoeff = (this.getDegree() % 2 == 0) ? 1 : -1;
+            long infCoeff = (this.getDegree() % 2 == 0) ? 1 : -1;
 
             infCoeff = pow(infCoeff, this.getDegree());
             boolean infSign = infCoeff != 1;
@@ -523,7 +521,7 @@ public class RationalPolynomial implements RationalOperationOutput {
 
     /**
      * obtains the degree of the current polynomial
-     * @precond 'this' must not have trailing zero terms
+     * precond: 'this' must not have trailing zero terms
      * @return degree of polynomial
      */
     public int getDegree(){

@@ -11,7 +11,7 @@ import mathClasses.RationalPolynomial;
  * Will come back to fix that when I implement generic scaler terms
  */
 public class Integrate extends Operation {
-    
+
     public Integrate(RationalPolynomial poly){
         super(poly);
     }
@@ -24,7 +24,7 @@ public class Integrate extends Operation {
         return (RationalPolynomial) output;
     }
 
-    public RationalPolynomial getIntegral(){
+    private RationalPolynomial getIntegral(){
         if(firstPoly.isNull()){
             throw new IllegalStateException("Can't compute integral of null polynomial");
         }

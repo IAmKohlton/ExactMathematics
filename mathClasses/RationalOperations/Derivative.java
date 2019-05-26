@@ -19,7 +19,7 @@ public class Derivative extends Operation {
         return (RationalPolynomial) output;
     }
 
-    public void getDerivative(){
+    private void getDerivative(){
         if(firstPoly.isNull()){
             throw new IllegalStateException("Can't take derivative of null polynomial");
         }
