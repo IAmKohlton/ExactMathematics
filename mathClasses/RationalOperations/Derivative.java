@@ -32,8 +32,10 @@ public class Derivative extends Operation {
             iterator.goForth();
             DoublyLinkedList<Rational> newPoly = new DoublyLinkedList<>();
             int i = 1;
+            Rational currentRat;
             while(!iterator.isAfter()){
-                newPoly.insert(iterator.getCurrentRational().multiply(new Rational(i)));
+                currentRat = iterator.getCurrentRational().multiply(new Rational(i));
+                newPoly.insert(currentRat);
                 iterator.goForth();
                 i++;
             }
