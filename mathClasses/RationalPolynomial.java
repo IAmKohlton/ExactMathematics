@@ -38,6 +38,13 @@ public class RationalPolynomial implements RationalOperationOutput {
         }
     }
 
+    public RationalPolynomial(DoublyLinkedList<Rational> listOfRationals){
+        poly = listOfRationals;
+        if(this.poly.getSize() != 0){
+            this.unPadPoly();
+        }
+    }
+
     /**
      * create a rational polynomial with integer coefficients. Psuedo-constructor
      * @param args integers to go in the polynomial
