@@ -5,6 +5,9 @@ import mathClasses.Rational;
 import mathClasses.RationalPolyIterator;
 import mathClasses.RationalPolynomial;
 
+/**
+ * Operation to calculate the derivative of a polynomial
+ */
 public class Derivative extends Operation {
 
     public Derivative(RationalPolynomial poly){
@@ -34,7 +37,7 @@ public class Derivative extends Operation {
             int i = 1;
             Rational currentRat;
             while(!iterator.isAfter()){
-                currentRat = iterator.getCurrentRational().multiply(new Rational(i));
+                currentRat = iterator.currentRational().multiply(new Rational(i));
                 newPoly.insert(currentRat);
                 iterator.goForth();
                 i++;

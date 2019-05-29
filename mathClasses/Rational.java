@@ -156,7 +156,7 @@ public class Rational implements Comparable<Rational>, RationalOperationOutput, 
      * @param num2 the second integer
      * @return greatest common denominator of the two numbers
      */
-    private static long gcd(long num1, long num2){
+    public static long gcd(long num1, long num2){
         // makes it so gcdRecusrsive is called with larger number being the first parameter, and the smaller one being the second
         long newGcd;
         if(num1 > num2){

@@ -129,7 +129,7 @@ public class RationalFactoring extends Operation{
     /**
      * checks if a polynomial with integer coefficients satisfies eisenstein's criterion.
      * @param polynomial non-null RationalPolynomial
-     * @precond rational polynomial must have integer coefficients. polynomial can't be null
+     * precond: rational polynomial must have integer coefficients. polynomial can't be null
      * @return -1 if the polynomial doesn't satisfy the criterion. Otherwise it gives the lowest prime number for which the criterion is satisfied
      */
     public static long eisenstein(RationalPolynomial polynomial){
@@ -149,7 +149,7 @@ public class RationalFactoring extends Operation{
         // check that the eisenstein's criterion can even be applied
         iterator.goFirst();
         while(!iterator.isAfter()){
-            if(iterator.getCurrentRational().getDenom() != 1){
+            if(iterator.currentRational().getDenom() != 1){
                 throw new IllegalStateException("Cannot apply eisenstien's criterion with non-integer coefficients");
             }
             iterator.goForth();
@@ -157,7 +157,7 @@ public class RationalFactoring extends Operation{
 
         polynomial.goFirst();
         iterator.goFirst();
-        long constant = Rational.toLong(iterator.getCurrentRational());
+        long constant = Rational.toLong(iterator.currentRational());
         constant = constant > -constant ? constant : -constant;
         if(constant == 0){
             // if the constant is 0 then it can be factored by x which guarantees that eisenteins criterion doesn't apply
@@ -190,7 +190,7 @@ public class RationalFactoring extends Operation{
             // if all the terms but the last term also divide the polynomial then it satisfies the last criterion
             continueLoop = false;
             while(!iterator.isLast()){
-                if(Rational.toLong(iterator.getCurrentRational()) % prime != 0){
+                if(Rational.toLong(iterator.currentRational()) % prime != 0){
                     continueLoop = true; // need to do this since we have no other way to 'break' this loop and subsequently 'continue' the above loop
                     break;
                 }

@@ -1,3 +1,90 @@
-In RationalPolynomial:
-	multiply (RationalPolynomial other)	
-	divide (RationalPolynomial other)
+Rational:
+	abs
+	add
+	clone
+	compareTo
+	divide
+	equals
+	getDenom
+	getInverse
+	getNumer
+	getSign
+	isInfinity
+	makeNegativeInfinity
+	makePositiveInfinity
+	gcd
+	lcm
+	multiply
+	power
+	subtract
+	toDouble
+	toFloat
+	toLong
+	toString
+
+RationalPolynomial:
+	add
+	clone
+	currentRational
+	divide
+	equals
+	getDegree
+	getFirst
+	getIterator
+	getLast
+	goBack
+	goFirst
+	goForth
+	goLast
+	integerize
+	isNull
+	multiply
+	oneLineToString
+	quotientRemainder
+	remainder
+	scale
+	solve
+	subtract
+	toString
+	
+RationalPolyIterator:
+	currentRational
+	goBack
+	goFirst
+	goForth
+	goLast
+	goToIth
+	isAfter
+	isFirst
+	isLast
+
+ProductOfPolynomial:
+	equals
+	getConstant
+	getFactor
+	getSize
+	goBack
+	goFirst
+	goForth
+	goLast
+	insertFactor
+	isAfter
+	multiplyTogether
+	setConstant
+	toString
+
+Derivative:
+	compute
+
+GreatestCommonDivisor:
+	compute
+
+Integrate:
+	compute
+
+RationalFactoring:
+	compute
+
+Operation:
+	compute
+	getOutput

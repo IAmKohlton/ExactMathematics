@@ -35,7 +35,7 @@ public class Integrate extends Operation {
         int i = 1;
         Rational currentRat;
         while(!iterator.isAfter()){
-            currentRat = iterator.getCurrentRational().divide(new Rational(i));
+            currentRat = iterator.currentRational().divide(new Rational(i));
             newPoly.insert(currentRat);
         }
         return new RationalPolynomial(newPoly);

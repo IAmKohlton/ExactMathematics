@@ -10,7 +10,7 @@ import static mathClasses.Rational.*;
 /**
  * Represents a polynomial with rational coefficients. Supports addition, scaling, and multiplication of polynomials
  */
-public class RationalPolynomial implements RationalOperationOutput {
+public class RationalPolynomial implements RationalOperationOutput, Cloneable{
     /**
      * Rational polynomial where items further along in the list have higher degree
      */
@@ -132,13 +132,13 @@ public class RationalPolynomial implements RationalOperationOutput {
         }
 
         // special case for if one is the zero polynomial
-        RationalPolynomial zeroPoly = new RationalPolynomial(new Rational(0)).copy();
+        RationalPolynomial zeroPoly = new RationalPolynomial(new Rational(0)).clone();
 
         if(this.equals(zeroPoly)){
             return other;
         }
         if(other.equals(zeroPoly)){
-            return this.copy();
+            return this.clone();
         }
 
         // need to pad polynomial of smaller degree with zero terms so we can iterate through both without trouble
@@ -200,7 +200,7 @@ public class RationalPolynomial implements RationalOperationOutput {
         }
 
         // special case for the zero polynomial
-        RationalPolynomial zero = new RationalPolynomial(new Rational(0)).copy();
+        RationalPolynomial zero = new RationalPolynomial(new Rational(0)).clone();
 
         if(this.equals(zero) || other.equals(zero)){
             return zero;
@@ -272,12 +272,12 @@ public class RationalPolynomial implements RationalOperationOutput {
             quotientRemainder.setSecond(zero);
         }else if(this.getDegree() < other.getDegree()) { // if the numerator is a higher degree than the denominator then remainder = numerator and quotient = zero
             quotientRemainder.setFirst(zero);
-            quotientRemainder.setSecond(this.copy());
+            quotientRemainder.setSecond(this.clone());
         }else if(other.getDegree() == 0){ // if the denominator is a constant then just scale the numerator
             quotientRemainder.setFirst(this.scale(other.currentRational().getInverse()));
             quotientRemainder.setSecond(zero);
         }else{
-            RationalPolynomial thisCopy = this.copy();
+            RationalPolynomial thisCopy = this.clone();
             int quotientDegree = this.getDegree() - other.getDegree();
 
             Rational thisLeadingTerm;
@@ -499,6 +499,8 @@ public class RationalPolynomial implements RationalOperationOutput {
         poly.goBack();
     }
 
+    public void goToIth(int i){ poly.goToIth(i);}
+
     public Rational getFirst(){return poly.getHead().item().clone();}
 
     public Rational getLast(){return poly.getTail().item().clone();}
@@ -545,14 +547,14 @@ public class RationalPolynomial implements RationalOperationOutput {
      * creates a deep clone of the current polynomial
      * @return clone of polynomial
      */
-    public RationalPolynomial copy(){
+    public RationalPolynomial clone(){
         RationalPolynomial temp = new RationalPolynomial();
         if(this.isNull()){
             return temp;
         }
 
         DoublyLinkedListIterator<Rational> iterator = this.poly.getIterator();
-       iterator.goFirst();
+        iterator.goFirst();
         while(!iterator.isAfter()){
             temp.poly.insert(iterator.item());
             iterator.goForth();

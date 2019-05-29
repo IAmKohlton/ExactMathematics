@@ -5,7 +5,7 @@ import dataStructures.DoublyLinkedNode;
 /**
  * Class that iterates over a RationalPolynomial
  */
-public class RationalPolyIterator extends RationalPolynomial{
+public class RationalPolyIterator{
     protected DoublyLinkedNode<Rational> currentNode;
 
     protected RationalPolynomial list;
@@ -15,7 +15,7 @@ public class RationalPolyIterator extends RationalPolynomial{
         currentNode = list.poly.getHead();
     }
 
-    public Rational getCurrentRational(){
+    public Rational currentRational(){
         return currentNode.item().clone();
     }
 

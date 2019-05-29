@@ -3,6 +3,9 @@ package mathClasses.RationalOperations;
 import mathClasses.Rational;
 import mathClasses.RationalPolynomial;
 
+/**
+ * Operation to calculate the greatest common divisor
+ */
 public class GreatestCommonDivisor extends Operation {
 
     public GreatestCommonDivisor(RationalPolynomial firstPoly, RationalPolynomial secondPoly){
